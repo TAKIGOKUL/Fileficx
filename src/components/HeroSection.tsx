@@ -97,16 +97,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         </p>
 
         {/* Instruction Card */}
-        <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-3 shadow-lg max-w-2xl mx-auto flex items-stretch gap-3 text-left">
+        <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-3 shadow-lg max-w-2xl mx-auto flex items-stretch gap-3 text-left transition-all">
           
-          {/* Inner textarea with subtle typing animation */}
+          {/* Inner textarea */}
           <div
             onClick={() => {
-              if (!isUserEditing) {
-                setIsUserEditing(true);
-              }
+              setIsUserEditing(true);
             }}
-            className="flex-1 rounded-xl bg-[var(--input-inner-bg)] border border-[var(--border-subtle)] p-2.5 relative cursor-text min-h-[64px]"
+            className="flex-1 rounded-xl bg-[var(--input-inner-bg)] border border-[var(--border-subtle)] p-2.5 relative cursor-text min-h-[68px] focus-within:border-[var(--accent)] transition-colors"
           >
             <textarea
               rows={2}
@@ -117,16 +115,19 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               }}
               onFocus={() => {
                 setIsUserEditing(true);
+                if (!inputText && typedText) {
+                  setInputText(typedText);
+                }
               }}
-              placeholder='e.g. "Photo: JPG, max 50KB, 200x230px"'
-              className="w-full h-full bg-transparent text-[var(--text-primary)] placeholder-[var(--text-muted)]/60 text-xs sm:text-sm font-semibold focus:outline-none resize-none font-sans leading-relaxed"
+              placeholder='Paste requirements (e.g. "Photo: JPG, max 50KB, 200x230px, 200 DPI")'
+              className="w-full h-full bg-transparent text-[var(--text-primary)] placeholder-[var(--text-muted)]/60 text-xs sm:text-sm font-semibold focus:outline-none resize-none font-sans leading-relaxed block"
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
                   handleParse();
                 }
               }}
             />
-            {!isUserEditing && (
+            {!isUserEditing && !inputText && (
               <span className="inline-block w-1.5 h-3.5 bg-[var(--accent)] ml-0.5 animate-pulse align-middle" />
             )}
           </div>
@@ -163,6 +164,28 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               )}
             </button>
           )}
+        </div>
+
+        {/* Quick Example Chips */}
+        <div className="mt-2.5 max-w-2xl mx-auto flex flex-wrap items-center justify-center gap-1.5 text-[11px]">
+          <span className="text-[var(--text-muted)] text-[10px] font-semibold uppercase tracking-wider mr-1">Presets:</span>
+          {TYPING_PHRASES.map((phrase, idx) => {
+            const label = phrase.split(':')[0];
+            return (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => {
+                  setIsUserEditing(true);
+                  setInputText(phrase);
+                  handleParse(phrase);
+                }}
+                className="px-2.5 py-1 rounded-lg bg-[var(--input-inner-bg)]/80 hover:bg-[var(--accent-subtle)] text-[var(--text-muted)] hover:text-[var(--accent)] border border-[var(--border-subtle)] hover:border-[var(--accent)]/30 font-medium text-[11px] transition-colors cursor-pointer"
+              >
+                {label}
+              </button>
+            );
+          })}
         </div>
 
         {/* Parsed Rules Chip List */}
