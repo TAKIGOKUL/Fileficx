@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+@layer base {
+  * {
+    border-radius: 0px !important;
+  }
+  
+  body {
+    background-color: #F4F4F0;
+    color: #111111;
+    font-family: 'Space Mono', monospace, ui-monospace;
+  }
+
+  h1, h2, h3, h4, h5, h6, .swiss-heading {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+/* Swiss Archiver Ledger Theme Variables & Utilities */
+.ledger-border {
+  border: 2px solid #111111;
+}
+
+.ledger-border-dashed {
+  border: 2px dashed #111111;
+}
+
+.ledger-paper-grid {
+  background-color: #F4F4F0;
+  background-image: linear-gradient(#E8E8E2 1px, transparent 1px), linear-gradient(90deg, #E8E8E2 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.stamp-box {
+  border: 2px solid #E63946;
+  color: #E63946;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+/* Custom Scrollbar for brutalist feel */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #E8E8E2;
+  border-left: 2px solid #111111;
+}
+::-webkit-scrollbar-thumb {
+  background: #111111;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #E63946;
+}
