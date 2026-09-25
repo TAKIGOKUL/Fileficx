@@ -40,6 +40,27 @@ export const App: React.FC = () => {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
+  // Dynamic SEO Page Title Management
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    switch (currentPage) {
+      case 'about':
+        document.title = 'About Us — Precision Document Optimization | Fileficx';
+        break;
+      case 'privacy':
+        document.title = 'Privacy Policy & GDPR Compliance | Fileficx';
+        break;
+      case 'terms':
+        document.title = 'Terms and Conditions | Fileficx';
+        break;
+      case 'contact':
+        document.title = 'Contact Us & Support | Fileficx';
+        break;
+      default:
+        document.title = 'Fileficx — Free In-Browser Photo & Document Resizer for Exam & Visa Applications';
+    }
+  }, [currentPage]);
+
   const handleNavigate = (page: string) => {
     const validPages: PageRoute[] = ['home', 'about', 'privacy', 'terms', 'contact'];
     const targetPage = validPages.includes(page as PageRoute) ? (page as PageRoute) : 'home';

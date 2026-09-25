@@ -14,7 +14,7 @@ describe('App Component', () => {
   it('renders hero headline and smart parser', () => {
     render(<App />);
     expect(screen.getByText(/Make every file/i)).toBeDefined();
-    expect(screen.getByText(/portal-ready\./i)).toBeDefined();
+    expect(screen.getByText(/application ready\./i)).toBeDefined();
     expect(screen.getByText(/Paste the requirement\. Drop the file\. Done\./i)).toBeDefined();
   });
 

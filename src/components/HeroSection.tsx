@@ -90,7 +90,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         {/* Headlines */}
         <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[var(--text-primary)] mb-2 leading-tight">
           Make every file<br />
-          <span className="text-[var(--accent)]">portal-ready.</span>
+          <span className="text-[var(--accent)]">application ready.</span>
         </h1>
         <p className="text-sm sm:text-base text-[var(--text-muted)] font-medium mb-6">
           Paste the requirement. Drop the file. Done.
