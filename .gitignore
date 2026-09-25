@@ -1,0 +1,9 @@
+node_modules
+dist
+.vite
+.claude
+fileninja.io
+lomma.webflow.io
+proxy.py
+.DS_Store
+*.log
