@@ -1,5 +1,5 @@
 import React from 'react';
-import { RefreshCw, FileText, Image as ImageIcon } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 import { formatFileSize } from '../utils/imageProcessor';
 
 interface LeftPaneProps {
@@ -51,9 +51,15 @@ export const LeftPane: React.FC<LeftPaneProps> = ({
               className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105"
             />
           ) : (
-            <div className="flex flex-col items-center gap-2 text-[var(--text-muted)]">
-              {isPDF ? <FileText className="w-10 h-10" /> : <ImageIcon className="w-10 h-10" />}
-              <span className="text-xs">Generating preview...</span>
+            <div className="flex flex-col items-center gap-2.5 text-[var(--text-muted)] py-6">
+              <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-lg border border-[var(--border-subtle)] bg-[var(--bg-card)] flex items-center justify-center p-1 animate-logo-pulse">
+                <img 
+                  src="/logo.png" 
+                  alt="Loading Fileficx" 
+                  className="w-full h-full object-contain" 
+                />
+              </div>
+              <span className="text-xs font-semibold text-[var(--text-primary)]">Reading & analyzing file...</span>
             </div>
           )}
 

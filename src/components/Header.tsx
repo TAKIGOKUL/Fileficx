@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sun, Moon, Zap, RotateCcw, Menu, X } from 'lucide-react';
+import { Sun, Moon, RotateCcw, Menu, X } from 'lucide-react';
 
 interface HeaderProps {
   currentTheme: 'light' | 'dark';
@@ -38,8 +38,12 @@ export const Header: React.FC<HeaderProps> = ({
             else if (onTryAnother) onTryAnother();
           }}
         >
-          <div className="w-8 h-8 rounded-full bg-[var(--accent)] flex items-center justify-center text-white shadow-md shadow-[var(--accent)]/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-            <Zap className="w-4 h-4 fill-current" />
+          <div className="w-8 h-8 rounded-full overflow-hidden shadow-md shadow-[var(--accent)]/30 group-hover:scale-110 transition-all duration-300 border border-[var(--border-subtle)] bg-black flex items-center justify-center">
+            <img 
+              src="/logo.png" 
+              alt="Fileficx Logo" 
+              className="w-full h-full object-cover" 
+            />
           </div>
           <span className="text-xl font-black tracking-tight text-[var(--text-primary)]">
             Fileficx

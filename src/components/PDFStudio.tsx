@@ -8,7 +8,6 @@ import {
   RotateCw,
   Trash2,
   Download,
-  Loader2,
   Archive
 } from 'lucide-react';
 import { PDFProcessingConfig, ProcessingMetadata } from '../types';
@@ -324,7 +323,11 @@ export const PDFStudio: React.FC<PDFStudioProps> = ({
           >
             {isProcessing ? (
               <>
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                <img 
+                  src="/logo.png" 
+                  alt="Processing PDF" 
+                  className="w-3.5 h-3.5 rounded-xs animate-logo-spin inline-block" 
+                />
                 <span>Processing PDF...</span>
               </>
             ) : (

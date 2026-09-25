@@ -8,8 +8,7 @@ import {
   Unlock,
   FileCheck2,
   Sliders,
-  Sparkles,
-  Loader2
+  Sparkles
 } from 'lucide-react';
 import {
   SupportedFormat,
@@ -466,12 +465,16 @@ export const RightPane: React.FC<RightPaneProps> = ({
             onClick={handleTriggerProcess}
             disabled={isProcessing}
             className={`btn btn-primary sm:col-span-1 w-full flex items-center justify-center gap-2 cursor-pointer ${
-              isProcessing ? 'opacity-75 cursor-not-allowed' : ''
+              isProcessing ? 'opacity-90 cursor-not-allowed' : ''
             }`}
           >
             {isProcessing ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <img 
+                  src="/logo.png" 
+                  alt="Processing" 
+                  className="w-4 h-4 rounded-sm animate-logo-spin inline-block" 
+                />
                 <span>Processing...</span>
               </>
             ) : (

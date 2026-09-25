@@ -1,5 +1,5 @@
 import React from 'react';
-import { Code2, Github, Linkedin, Instagram, Send } from 'lucide-react';
+import { Github, Linkedin, Instagram, Send } from 'lucide-react';
 
 interface FooterProps {
   onNavigate?: (page: string) => void;
@@ -30,8 +30,12 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate = () => {} }) => {
               onClick={() => handleNav('home')}
               className="inline-flex items-center gap-2 cursor-pointer group"
             >
-              <div className="w-7 h-7 rounded-lg bg-[var(--accent)] text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
-                <Code2 className="w-4 h-4" />
+              <div className="w-8 h-8 rounded-full overflow-hidden shadow-sm border border-[var(--border-subtle)] bg-black flex items-center justify-center group-hover:scale-105 transition-transform">
+                <img 
+                  src="/logo.png" 
+                  alt="Fileficx Logo" 
+                  className="w-full h-full object-cover" 
+                />
               </div>
               <span className="text-lg font-black tracking-tight text-[var(--text-primary)]">
                 Fileficx
@@ -151,7 +155,12 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate = () => {} }) => {
 
         {/* Bottom Divider & Social Bar */}
         <div className="border-t border-[var(--border-subtle)] pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-left">
-          <div className="text-[11px] text-[var(--text-muted)] font-normal flex flex-wrap items-center gap-1.5">
+          <div className="text-[11px] text-[var(--text-muted)] font-normal flex flex-wrap items-center gap-2">
+            <img 
+              src="/logo.png" 
+              alt="Fileficx" 
+              className="w-5 h-5 rounded-full object-cover border border-[var(--border-subtle)] bg-black inline-block shrink-0" 
+            />
             <span>Built by <strong className="text-[var(--text-primary)] font-semibold">TAKIGOKUL</strong>. Powered securely by WebAssembly. No files are uploaded to any server.</span>
             <span>•</span>
             <button
