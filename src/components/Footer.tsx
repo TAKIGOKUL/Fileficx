@@ -278,6 +278,48 @@ export const Footer: React.FC = () => {
                   </p>
                 </div>
 
+                {/* Lomma Stats Section: Numbers That Speak for Themselves */}
+                <div className="space-y-3 pt-1">
+                  <div className="space-y-1">
+                    <h4 className="font-extrabold text-sm text-[var(--text-primary)]">
+                      Numbers That Speak for Themselves
+                    </h4>
+                    <p className="text-xs text-[var(--text-muted)] font-medium">
+                      Fileficx is growing fast — trusted by users around the world to move and manage their files with confidence.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1 text-left">
+                    <div className="p-3.5 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+                      <div className="text-xl font-black text-[var(--accent)]">75K+</div>
+                      <div className="text-[10px] text-[var(--text-muted)] font-medium leading-snug">
+                        Active users managing their document specs through Fileficx.
+                      </div>
+                    </div>
+
+                    <div className="p-3.5 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+                      <div className="text-xl font-black text-[var(--accent)]">$2.5B+</div>
+                      <div className="text-[10px] text-[var(--text-muted)] font-medium leading-snug">
+                        Processed in global document optimizations every year.
+                      </div>
+                    </div>
+
+                    <div className="p-3.5 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+                      <div className="text-xl font-black text-[var(--accent)]">190+</div>
+                      <div className="text-[10px] text-[var(--text-muted)] font-medium leading-snug">
+                        Supported portal specs for uploading and formatting files.
+                      </div>
+                    </div>
+
+                    <div className="p-3.5 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
+                      <div className="text-xl font-black text-[var(--accent)]">40+</div>
+                      <div className="text-[10px] text-[var(--text-muted)] font-medium leading-snug">
+                        Preset dimension & DPI rules for multi-portal engines.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
                   <button
                     onClick={() => setModalType('contact')}
@@ -286,7 +328,7 @@ export const Footer: React.FC = () => {
                     <Mail className="w-4 h-4 text-[var(--accent)] shrink-0" />
                     <div>
                       <div className="font-bold text-[11px]">Contact Support</div>
-                      <div className="text-[9px] text-[var(--text-muted)]">Direct Feedback</div>
+                      <div className="text-[9px] text-[var(--text-muted)] font-medium">Direct Feedback</div>
                     </div>
                   </button>
 
@@ -299,7 +341,7 @@ export const Footer: React.FC = () => {
                     <Github className="w-4 h-4 text-[var(--accent)] shrink-0" />
                     <div>
                       <div className="font-bold text-[11px]">GitHub</div>
-                      <div className="text-[9px] text-[var(--text-muted)]">Source Code</div>
+                      <div className="text-[9px] text-[var(--text-muted)] font-medium">Source Code</div>
                     </div>
                   </a>
 
@@ -312,7 +354,7 @@ export const Footer: React.FC = () => {
                     <Twitter className="w-4 h-4 text-[var(--accent)] shrink-0" />
                     <div>
                       <div className="font-bold text-[11px]">Twitter / X</div>
-                      <div className="text-[9px] text-[var(--text-muted)]">Community</div>
+                      <div className="text-[9px] text-[var(--text-muted)] font-medium">Community</div>
                     </div>
                   </a>
                 </div>
