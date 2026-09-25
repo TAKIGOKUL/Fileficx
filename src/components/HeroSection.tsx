@@ -120,16 +120,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 }
               }}
               placeholder='Paste requirements (e.g. "Photo: JPG, max 50KB, 200x230px, 200 DPI")'
-              className="w-full h-full bg-transparent text-[var(--text-primary)] placeholder-[var(--text-muted)]/60 text-xs sm:text-sm font-semibold focus:outline-none resize-none font-sans leading-relaxed block"
+              className="w-full h-full bg-transparent text-[var(--text-primary)] placeholder-[var(--text-muted)]/60 text-xs sm:text-sm font-semibold focus:outline-none resize-none font-sans leading-relaxed block caret-[var(--accent)]"
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
                   handleParse();
                 }
               }}
             />
-            {!isUserEditing && !inputText && (
-              <span className="inline-block w-1.5 h-3.5 bg-[var(--accent)] ml-0.5 animate-pulse align-middle" />
-            )}
           </div>
 
           {/* Action Button: Professional & Clean */}
