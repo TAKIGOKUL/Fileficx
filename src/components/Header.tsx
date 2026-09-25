@@ -6,21 +6,24 @@ interface HeaderProps {
   onToggleTheme: () => void;
   hasFile?: boolean;
   onTryAnother?: () => void;
+  currentPage?: string;
+  onNavigate?: (page: string) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   currentTheme,
   onToggleTheme,
   hasFile = false,
-  onTryAnother
+  onTryAnother,
+  currentPage = 'home',
+  onNavigate = () => {}
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const triggerModal = (type: string) => {
+  const handleNav = (page: string) => {
     setMobileMenuOpen(false);
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('open_footer_modal', { detail: type }));
-    }
+    onNavigate(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -30,7 +33,10 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Brand Logo */}
         <div 
           className="flex items-center gap-2.5 cursor-pointer group" 
-          onClick={onTryAnother}
+          onClick={() => {
+            if (currentPage !== 'home') handleNav('home');
+            else if (onTryAnother) onTryAnother();
+          }}
         >
           <div className="w-8 h-8 rounded-full bg-[var(--accent)] flex items-center justify-center text-white shadow-md shadow-[var(--accent)]/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
             <Zap className="w-4 h-4 fill-current" />
@@ -43,32 +49,64 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Center Lomma-Style Capsule Navigation Pill Links */}
         <nav className="hidden md:flex items-center gap-1.5 bg-[var(--input-inner-bg)]/50 border border-[var(--border-subtle)] p-1 rounded-full text-xs font-bold text-[var(--text-muted)]">
           <button
-            onClick={() => triggerModal('about')}
-            className="px-4 py-1.5 rounded-full hover:bg-[var(--bg-card)] hover:text-[var(--accent)] hover:shadow-xs transition-all duration-200 cursor-pointer flex items-center gap-1.5"
+            onClick={() => handleNav('home')}
+            className={`px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${
+              currentPage === 'home'
+                ? 'bg-[var(--bg-card)] text-[var(--accent)] shadow-xs'
+                : 'hover:bg-[var(--bg-card)] hover:text-[var(--accent)]'
+            }`}
+          >
+            Home
+          </button>
+          <button
+            onClick={() => handleNav('about')}
+            className={`px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+              currentPage === 'about'
+                ? 'bg-[var(--bg-card)] text-[var(--accent)] shadow-xs'
+                : 'hover:bg-[var(--bg-card)] hover:text-[var(--accent)]'
+            }`}
           >
             <User className="w-3.5 h-3.5 text-[var(--accent)]" />
             <span>About Us</span>
           </button>
           <button
-            onClick={() => triggerModal('privacy')}
-            className="px-4 py-1.5 rounded-full hover:bg-[var(--bg-card)] hover:text-[var(--accent)] hover:shadow-xs transition-all duration-200 cursor-pointer flex items-center gap-1.5"
+            onClick={() => handleNav('privacy')}
+            className={`px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+              currentPage === 'privacy'
+                ? 'bg-[var(--bg-card)] text-[var(--accent)] shadow-xs'
+                : 'hover:bg-[var(--bg-card)] hover:text-[var(--accent)]'
+            }`}
           >
             <Shield className="w-3.5 h-3.5 text-[var(--accent)]" />
-            <span>Privacy & Terms</span>
+            <span>Privacy</span>
           </button>
           <button
-            onClick={() => triggerModal('contact')}
-            className="px-4 py-1.5 rounded-full hover:bg-[var(--bg-card)] hover:text-[var(--accent)] hover:shadow-xs transition-all duration-200 cursor-pointer flex items-center gap-1.5"
+            onClick={() => handleNav('terms')}
+            className={`px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${
+              currentPage === 'terms'
+                ? 'bg-[var(--bg-card)] text-[var(--accent)] shadow-xs'
+                : 'hover:bg-[var(--bg-card)] hover:text-[var(--accent)]'
+            }`}
+          >
+            Terms
+          </button>
+          <button
+            onClick={() => handleNav('contact')}
+            className={`px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+              currentPage === 'contact'
+                ? 'bg-[var(--bg-card)] text-[var(--accent)] shadow-xs'
+                : 'hover:bg-[var(--bg-card)] hover:text-[var(--accent)]'
+            }`}
           >
             <Mail className="w-3.5 h-3.5 text-[var(--accent)]" />
-            <span>Contact Us</span>
+            <span>Contact</span>
           </button>
         </nav>
 
         {/* Right Controls */}
         <div className="flex items-center gap-2.5">
           {/* Try Another File button - shown when a file is loaded */}
-          {hasFile && onTryAnother && (
+          {hasFile && onTryAnother && currentPage === 'home' && (
             <button
               onClick={onTryAnother}
               className="btn btn-primary text-xs py-1.5 px-4 rounded-full flex items-center gap-2 cursor-pointer shadow-md hover:scale-[1.03] active:scale-95 transition-all duration-200 font-bold"
@@ -109,21 +147,33 @@ export const Header: React.FC<HeaderProps> = ({
       {mobileMenuOpen && (
         <div className="md:hidden max-w-5xl mx-auto mt-2 p-3 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-xl space-y-1 text-xs font-bold text-[var(--text-muted)] animate-slide-up">
           <button
-            onClick={() => triggerModal('about')}
+            onClick={() => handleNav('home')}
+            className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-[var(--input-inner-bg)] flex items-center gap-2.5 transition-colors"
+          >
+            <span>Home</span>
+          </button>
+          <button
+            onClick={() => handleNav('about')}
             className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-[var(--input-inner-bg)] flex items-center gap-2.5 transition-colors"
           >
             <User className="w-4 h-4 text-[var(--accent)]" />
-            <span>About Us & Story</span>
+            <span>About Us</span>
           </button>
           <button
-            onClick={() => triggerModal('privacy')}
+            onClick={() => handleNav('privacy')}
             className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-[var(--input-inner-bg)] flex items-center gap-2.5 transition-colors"
           >
             <Shield className="w-4 h-4 text-[var(--accent)]" />
-            <span>Privacy Policy & Terms</span>
+            <span>Privacy Policy</span>
           </button>
           <button
-            onClick={() => triggerModal('contact')}
+            onClick={() => handleNav('terms')}
+            className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-[var(--input-inner-bg)] flex items-center gap-2.5 transition-colors"
+          >
+            <span>Terms & Conditions</span>
+          </button>
+          <button
+            onClick={() => handleNav('contact')}
             className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-[var(--input-inner-bg)] flex items-center gap-2.5 transition-colors"
           >
             <Mail className="w-4 h-4 text-[var(--accent)]" />

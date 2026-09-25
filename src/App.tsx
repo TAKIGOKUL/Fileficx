@@ -7,10 +7,49 @@ import { Workspace } from './components/Workspace';
 import { AdBanner } from './components/AdBanner';
 import { Footer } from './components/Footer';
 import { ConsentBanner } from './components/ConsentBanner';
+import { AboutPage } from './pages/AboutPage';
+import { PrivacyPage } from './pages/PrivacyPage';
+import { TermsPage } from './pages/TermsPage';
+import { ContactPage } from './pages/ContactPage';
 import { ParsedRequirement } from './types';
 import { parseInstructions } from './utils/instructionParser';
 
+type PageRoute = 'home' | 'about' | 'privacy' | 'terms' | 'contact';
+
 export const App: React.FC = () => {
+  // Navigation State with URL Path Sync
+  const getInitialPage = (): PageRoute => {
+    if (typeof window !== 'undefined') {
+      const path = window.location.pathname.toLowerCase().replace(/^\/+/, '');
+      if (path === 'about') return 'about';
+      if (path === 'privacy') return 'privacy';
+      if (path === 'terms') return 'terms';
+      if (path === 'contact') return 'contact';
+    }
+    return 'home';
+  };
+
+  const [currentPage, setCurrentPage] = useState<PageRoute>(getInitialPage);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      setCurrentPage(getInitialPage());
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const handleNavigate = (page: string) => {
+    const validPages: PageRoute[] = ['home', 'about', 'privacy', 'terms', 'contact'];
+    const targetPage = validPages.includes(page as PageRoute) ? (page as PageRoute) : 'home';
+    setCurrentPage(targetPage);
+    if (typeof window !== 'undefined') {
+      const newUrl = targetPage === 'home' ? '/' : `/${targetPage}`;
+      if (window.location.pathname !== newUrl) {
+        window.history.pushState(null, '', newUrl);
+      }
+    }
+  };
   // Theme Management (Defaults to warm cream theme)
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     if (typeof window !== 'undefined') {
@@ -143,56 +182,81 @@ export const App: React.FC = () => {
           onToggleTheme={toggleTheme}
           hasFile={isWorkspaceActive && uploadedFile !== null}
           onTryAnother={handleReset}
+          currentPage={currentPage}
+          onNavigate={handleNavigate}
         />
 
         {/* Outer Layout Container with Side Ads & Main Content */}
         <div className="w-full flex items-start justify-center gap-4 px-2 sm:px-4 py-2">
           
-          {/* Left Vertical Skyscraper Ad in Peach */}
+          {/* Left Vertical Skyscraper Ad */}
           <AdBanner variant="side-left" className="hidden 2xl:flex sticky top-20 self-start" />
 
           {/* Center Main Stage */}
           <main className="w-full max-w-6xl px-2 sm:px-4 py-2 flex-1">
             
-            {/* View 1: When workspace is not active, stay on homepage with typing animation, dropzone, and pulsing parse button */}
-            {!isWorkspaceActive ? (
-              <div className="animate-fadeIn">
-                <HeroSection
-                  onParsed={handleParsed}
-                  hasFile={uploadedFile !== null}
-                  onProceedToWorkspace={handleProceedToWorkspace}
-                />
-
-                <FileDropzone
-                  currentFile={uploadedFile}
-                  onFileSelect={handleFileSelect}
-                />
-              </div>
-            ) : (
-              uploadedFile && (
-                /* View 2: When user clicks Parse/Process, transition to the 2-Pane Workspace */
-                <div id="workspace-section" className="my-6 animate-slide-up">
-                  <Workspace
-                    file={uploadedFile}
-                    parsedReq={parsedReq}
-                    onReplaceFile={handleReset}
-                  />
-                </div>
-              )
+            {/* View A: About Page */}
+            {currentPage === 'about' && (
+              <AboutPage onNavigate={handleNavigate} />
             )}
 
-            {/* Below workspace / dropzone peach leaderboard */}
+            {/* View B: Privacy Policy Page */}
+            {currentPage === 'privacy' && (
+              <PrivacyPage onNavigate={handleNavigate} />
+            )}
+
+            {/* View C: Terms and Conditions Page */}
+            {currentPage === 'terms' && (
+              <TermsPage onNavigate={handleNavigate} />
+            )}
+
+            {/* View D: Contact Us Page */}
+            {currentPage === 'contact' && (
+              <ContactPage onNavigate={handleNavigate} />
+            )}
+
+            {/* View E: Homepage Hero / Dropzone / Workspace */}
+            {currentPage === 'home' && (
+              <>
+                {!isWorkspaceActive ? (
+                  <div className="animate-fadeIn">
+                    <HeroSection
+                      onParsed={handleParsed}
+                      hasFile={uploadedFile !== null}
+                      onProceedToWorkspace={handleProceedToWorkspace}
+                    />
+
+                    <FileDropzone
+                      currentFile={uploadedFile}
+                      onFileSelect={handleFileSelect}
+                    />
+                  </div>
+                ) : (
+                  uploadedFile && (
+                    <div id="workspace-section" className="my-6 animate-slide-up">
+                      <Workspace
+                        file={uploadedFile}
+                        parsedReq={parsedReq}
+                        onReplaceFile={handleReset}
+                      />
+                    </div>
+                  )
+                )}
+              </>
+            )}
+
+            {/* Below content ad banner */}
             <AdBanner variant="bottom" />
           </main>
 
-          {/* Right Vertical Skyscraper Ad (either side) */}
+          {/* Right Vertical Skyscraper Ad */}
           <AdBanner variant="side-right" className="hidden 2xl:flex sticky top-20 self-start" />
 
         </div>
       </div>
 
       {/* Footer & Privacy Consent Banner */}
-      <Footer />
+      <Footer onNavigate={handleNavigate} />
       <ConsentBanner />
     </div>
   );
