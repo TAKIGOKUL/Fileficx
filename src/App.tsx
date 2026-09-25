@@ -11,6 +11,7 @@ import { AboutPage } from './pages/AboutPage';
 import { PrivacyPage } from './pages/PrivacyPage';
 import { TermsPage } from './pages/TermsPage';
 import { ContactPage } from './pages/ContactPage';
+import { SocialsVertical } from './components/SocialsVertical';
 import { ParsedRequirement } from './types';
 import { parseInstructions } from './utils/instructionParser';
 
@@ -254,6 +255,9 @@ export const App: React.FC = () => {
 
         </div>
       </div>
+
+      {/* Floating Vertical Social Sidebar */}
+      <SocialsVertical />
 
       {/* Footer & Privacy Consent Banner */}
       <Footer onNavigate={handleNavigate} />

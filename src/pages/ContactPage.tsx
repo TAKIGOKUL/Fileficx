@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Mail, Send, CheckCircle2, Github, Twitter } from 'lucide-react';
+import { ArrowLeft, Mail, Send, CheckCircle2, Github, Linkedin, Instagram, MessageCircle, Phone } from 'lucide-react';
 
 interface ContactPageProps {
   onNavigate: (page: string) => void;
@@ -139,43 +139,108 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigate }) => {
 
         {/* Right 1 Col: Direct Contact Cards */}
         <div className="space-y-3">
-          <div className="p-4 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] space-y-1">
-            <div className="w-7 h-7 rounded-lg bg-[var(--accent-subtle)] text-[var(--accent)] flex items-center justify-center font-bold mb-2">
-              <Mail className="w-4 h-4" />
-            </div>
-            <h3 className="font-semibold text-xs text-[var(--text-primary)]">Direct Email</h3>
-            <p className="text-[11px] text-[var(--text-muted)] font-normal break-all">
-              gokulgkblueheart@gmail.com
-            </p>
-          </div>
-
           <a
-            href="https://github.com/TAKIGOKUL/Fileficx.git"
+            href="https://api.whatsapp.com/send?phone=918129725007&text="
             target="_blank"
             rel="noreferrer"
-            className="p-4 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--accent)] space-y-1 block transition-colors"
+            className="p-3.5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--accent)] space-y-1 block transition-colors"
           >
-            <div className="w-7 h-7 rounded-lg bg-[var(--accent-subtle)] text-[var(--accent)] flex items-center justify-center font-bold mb-2">
-              <Github className="w-4 h-4" />
+            <div className="w-7 h-7 rounded-lg bg-[var(--accent-subtle)] text-[var(--accent)] flex items-center justify-center font-bold mb-1.5">
+              <MessageCircle className="w-4 h-4" />
             </div>
-            <h3 className="font-semibold text-xs text-[var(--text-primary)]">GitHub</h3>
+            <h3 className="font-semibold text-xs text-[var(--text-primary)]">WhatsApp</h3>
             <p className="text-[11px] text-[var(--text-muted)] font-normal">
-              TAKIGOKUL / Fileficx
+              +91 8129725007
             </p>
           </a>
 
           <a
-            href="https://x.com"
+            href="mailto:gokul23gopakumar@gmail.com"
             target="_blank"
             rel="noreferrer"
-            className="p-4 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--accent)] space-y-1 block transition-colors"
+            className="p-3.5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--accent)] space-y-1 block transition-colors"
           >
-            <div className="w-7 h-7 rounded-lg bg-[var(--accent-subtle)] text-[var(--accent)] flex items-center justify-center font-bold mb-2">
-              <Twitter className="w-4 h-4" />
+            <div className="w-7 h-7 rounded-lg bg-[var(--accent-subtle)] text-[var(--accent)] flex items-center justify-center font-bold mb-1.5">
+              <Mail className="w-4 h-4" />
             </div>
-            <h3 className="font-semibold text-xs text-[var(--text-primary)]">Twitter / X</h3>
+            <h3 className="font-semibold text-xs text-[var(--text-primary)]">Direct Email</h3>
+            <p className="text-[11px] text-[var(--text-muted)] font-normal break-all">
+              gokul23gopakumar@gmail.com
+            </p>
+          </a>
+
+          <a
+            href="tel:8129725007"
+            target="_blank"
+            rel="noreferrer"
+            className="p-3.5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--accent)] space-y-1 block transition-colors"
+          >
+            <div className="w-7 h-7 rounded-lg bg-[var(--accent-subtle)] text-[var(--accent)] flex items-center justify-center font-bold mb-1.5">
+              <Phone className="w-4 h-4" />
+            </div>
+            <h3 className="font-semibold text-xs text-[var(--text-primary)]">Phone</h3>
             <p className="text-[11px] text-[var(--text-muted)] font-normal">
-              Community & Updates
+              +91 8129725007
+            </p>
+          </a>
+
+          <a
+            href="https://t.me/alchemist_taki"
+            target="_blank"
+            rel="noreferrer"
+            className="p-3.5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--accent)] space-y-1 block transition-colors"
+          >
+            <div className="w-7 h-7 rounded-lg bg-[var(--accent-subtle)] text-[var(--accent)] flex items-center justify-center font-bold mb-1.5">
+              <Send className="w-4 h-4" />
+            </div>
+            <h3 className="font-semibold text-xs text-[var(--text-primary)]">Telegram</h3>
+            <p className="text-[11px] text-[var(--text-muted)] font-normal">
+              @alchemist_taki
+            </p>
+          </a>
+
+          <a
+            href="https://github.com/TAKIGOKUL"
+            target="_blank"
+            rel="noreferrer"
+            className="p-3.5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--accent)] space-y-1 block transition-colors"
+          >
+            <div className="w-7 h-7 rounded-lg bg-[var(--accent-subtle)] text-[var(--accent)] flex items-center justify-center font-bold mb-1.5">
+              <Github className="w-4 h-4" />
+            </div>
+            <h3 className="font-semibold text-xs text-[var(--text-primary)]">GitHub</h3>
+            <p className="text-[11px] text-[var(--text-muted)] font-normal">
+              TAKIGOKUL
+            </p>
+          </a>
+
+          <a
+            href="https://www.linkedin.com/in/gokul-gk-b0b718261/"
+            target="_blank"
+            rel="noreferrer"
+            className="p-3.5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--accent)] space-y-1 block transition-colors"
+          >
+            <div className="w-7 h-7 rounded-lg bg-[var(--accent-subtle)] text-[var(--accent)] flex items-center justify-center font-bold mb-1.5">
+              <Linkedin className="w-4 h-4" />
+            </div>
+            <h3 className="font-semibold text-xs text-[var(--text-primary)]">LinkedIn</h3>
+            <p className="text-[11px] text-[var(--text-muted)] font-normal">
+              Gokul GK
+            </p>
+          </a>
+
+          <a
+            href="https://www.instagram.com/ad.astra.___/"
+            target="_blank"
+            rel="noreferrer"
+            className="p-3.5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--accent)] space-y-1 block transition-colors"
+          >
+            <div className="w-7 h-7 rounded-lg bg-[var(--accent-subtle)] text-[var(--accent)] flex items-center justify-center font-bold mb-1.5">
+              <Instagram className="w-4 h-4" />
+            </div>
+            <h3 className="font-semibold text-xs text-[var(--text-primary)]">Instagram</h3>
+            <p className="text-[11px] text-[var(--text-muted)] font-normal">
+              @ad.astra.___
             </p>
           </a>
         </div>

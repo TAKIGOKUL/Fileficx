@@ -1,5 +1,5 @@
 import React from 'react';
-import { Code2, Github, Twitter, Linkedin, Instagram, Youtube } from 'lucide-react';
+import { Code2, Github, Linkedin, Instagram, MessageCircle, Send, Mail, Phone } from 'lucide-react';
 
 interface FooterProps {
   onNavigate?: (page: string) => void;
@@ -163,51 +163,76 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate = () => {} }) => {
           </div>
 
           {/* Social Icons */}
-          <div className="flex items-center gap-3 text-[var(--text-muted)]">
+          <div className="flex flex-wrap items-center gap-2 text-[var(--text-muted)]">
             <a
-              href="https://github.com/TAKIGOKUL/Fileficx.git"
+              href="https://api.whatsapp.com/send?phone=918129725007&text="
               target="_blank"
               rel="noreferrer"
               className="p-1.5 rounded-full hover:text-[var(--text-primary)] hover:bg-[var(--input-inner-bg)] transition-colors"
-              aria-label="GitHub"
+              aria-label="WhatsApp"
+              title="WhatsApp"
             >
-              <Github className="w-4 h-4" />
+              <MessageCircle className="w-4 h-4" />
             </a>
             <a
-              href="https://x.com"
-              target="_blank"
-              rel="noreferrer"
-              className="p-1.5 rounded-full hover:text-[var(--text-primary)] hover:bg-[var(--input-inner-bg)] transition-colors"
-              aria-label="Twitter / X"
-            >
-              <Twitter className="w-4 h-4" />
-            </a>
-            <a
-              href="https://linkedin.com"
-              target="_blank"
-              rel="noreferrer"
-              className="p-1.5 rounded-full hover:text-[var(--text-primary)] hover:bg-[var(--input-inner-bg)] transition-colors"
-              aria-label="LinkedIn"
-            >
-              <Linkedin className="w-4 h-4" />
-            </a>
-            <a
-              href="https://instagram.com"
+              href="https://www.instagram.com/ad.astra.___/"
               target="_blank"
               rel="noreferrer"
               className="p-1.5 rounded-full hover:text-[var(--text-primary)] hover:bg-[var(--input-inner-bg)] transition-colors"
               aria-label="Instagram"
+              title="Instagram"
             >
               <Instagram className="w-4 h-4" />
             </a>
             <a
-              href="https://youtube.com"
+              href="https://github.com/TAKIGOKUL"
               target="_blank"
               rel="noreferrer"
               className="p-1.5 rounded-full hover:text-[var(--text-primary)] hover:bg-[var(--input-inner-bg)] transition-colors"
-              aria-label="YouTube"
+              aria-label="GitHub"
+              title="GitHub"
             >
-              <Youtube className="w-4 h-4" />
+              <Github className="w-4 h-4" />
+            </a>
+            <a
+              href="https://www.linkedin.com/in/gokul-gk-b0b718261/"
+              target="_blank"
+              rel="noreferrer"
+              className="p-1.5 rounded-full hover:text-[var(--text-primary)] hover:bg-[var(--input-inner-bg)] transition-colors"
+              aria-label="LinkedIn"
+              title="LinkedIn"
+            >
+              <Linkedin className="w-4 h-4" />
+            </a>
+            <a
+              href="https://t.me/alchemist_taki"
+              target="_blank"
+              rel="noreferrer"
+              className="p-1.5 rounded-full hover:text-[var(--text-primary)] hover:bg-[var(--input-inner-bg)] transition-colors"
+              aria-label="Telegram"
+              title="Telegram"
+            >
+              <Send className="w-4 h-4" />
+            </a>
+            <a
+              href="mailto:gokul23gopakumar@gmail.com"
+              target="_blank"
+              rel="noreferrer"
+              className="p-1.5 rounded-full hover:text-[var(--text-primary)] hover:bg-[var(--input-inner-bg)] transition-colors"
+              aria-label="Email"
+              title="Email"
+            >
+              <Mail className="w-4 h-4" />
+            </a>
+            <a
+              href="tel:8129725007"
+              target="_blank"
+              rel="noreferrer"
+              className="p-1.5 rounded-full hover:text-[var(--text-primary)] hover:bg-[var(--input-inner-bg)] transition-colors"
+              aria-label="Phone"
+              title="Phone"
+            >
+              <Phone className="w-4 h-4" />
             </a>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, Mail, Github, Twitter, ShieldCheck, Zap, Layers, HardDrive } from 'lucide-react';
+import { ArrowLeft, Mail, Github, Linkedin, Instagram, MessageCircle, Send, ShieldCheck, Zap, Layers, HardDrive } from 'lucide-react';
 
 interface AboutPageProps {
   onNavigate: (page: string) => void;
@@ -123,44 +123,85 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
         </div>
       </div>
 
-      {/* Connect / Open Source */}
+      {/* Connect & Creator Channels */}
       <div className="space-y-3 pt-4 border-t border-[var(--border-subtle)]">
-        <h3 className="text-sm font-bold text-[var(--text-primary)]">Connect & Support</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <button
-            onClick={() => onNavigate('contact')}
-            className="p-4 rounded-xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--accent)] text-left transition-colors cursor-pointer flex items-center gap-3"
-          >
-            <Mail className="w-4 h-4 text-[var(--accent)] shrink-0" />
-            <div>
-              <div className="font-semibold text-xs text-[var(--text-primary)]">Contact Support</div>
-              <div className="text-[11px] text-[var(--text-muted)]">Direct inquiries</div>
-            </div>
-          </button>
-
+        <h3 className="text-sm font-bold text-[var(--text-primary)]">Connect with the Creator</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           <a
-            href="https://github.com/TAKIGOKUL/Fileficx.git"
+            href="https://api.whatsapp.com/send?phone=918129725007&text="
             target="_blank"
             rel="noreferrer"
-            className="p-4 rounded-xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--accent)] transition-colors flex items-center gap-3"
+            className="p-3.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--accent)] transition-colors flex items-center gap-3"
           >
-            <Github className="w-4 h-4 text-[var(--accent)] shrink-0" />
+            <MessageCircle className="w-4 h-4 text-[var(--accent)] shrink-0" />
             <div>
-              <div className="font-semibold text-xs text-[var(--text-primary)]">GitHub Repository</div>
-              <div className="text-[11px] text-[var(--text-muted)]">TAKIGOKUL / Fileficx</div>
+              <div className="font-semibold text-xs text-[var(--text-primary)]">WhatsApp</div>
+              <div className="text-[11px] text-[var(--text-muted)]">+91 8129725007</div>
             </div>
           </a>
 
           <a
-            href="https://x.com"
+            href="https://t.me/alchemist_taki"
             target="_blank"
             rel="noreferrer"
-            className="p-4 rounded-xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--accent)] transition-colors flex items-center gap-3"
+            className="p-3.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--accent)] transition-colors flex items-center gap-3"
           >
-            <Twitter className="w-4 h-4 text-[var(--accent)] shrink-0" />
+            <Send className="w-4 h-4 text-[var(--accent)] shrink-0" />
             <div>
-              <div className="font-semibold text-xs text-[var(--text-primary)]">Twitter / X</div>
-              <div className="text-[11px] text-[var(--text-muted)]">Product updates</div>
+              <div className="font-semibold text-xs text-[var(--text-primary)]">Telegram</div>
+              <div className="text-[11px] text-[var(--text-muted)]">@alchemist_taki</div>
+            </div>
+          </a>
+
+          <a
+            href="https://github.com/TAKIGOKUL"
+            target="_blank"
+            rel="noreferrer"
+            className="p-3.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--accent)] transition-colors flex items-center gap-3"
+          >
+            <Github className="w-4 h-4 text-[var(--accent)] shrink-0" />
+            <div>
+              <div className="font-semibold text-xs text-[var(--text-primary)]">GitHub</div>
+              <div className="text-[11px] text-[var(--text-muted)]">TAKIGOKUL</div>
+            </div>
+          </a>
+
+          <a
+            href="https://www.linkedin.com/in/gokul-gk-b0b718261/"
+            target="_blank"
+            rel="noreferrer"
+            className="p-3.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--accent)] transition-colors flex items-center gap-3"
+          >
+            <Linkedin className="w-4 h-4 text-[var(--accent)] shrink-0" />
+            <div>
+              <div className="font-semibold text-xs text-[var(--text-primary)]">LinkedIn</div>
+              <div className="text-[11px] text-[var(--text-muted)]">Gokul GK</div>
+            </div>
+          </a>
+
+          <a
+            href="https://www.instagram.com/ad.astra.___/"
+            target="_blank"
+            rel="noreferrer"
+            className="p-3.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--accent)] transition-colors flex items-center gap-3"
+          >
+            <Instagram className="w-4 h-4 text-[var(--accent)] shrink-0" />
+            <div>
+              <div className="font-semibold text-xs text-[var(--text-primary)]">Instagram</div>
+              <div className="text-[11px] text-[var(--text-muted)]">@ad.astra.___</div>
+            </div>
+          </a>
+
+          <a
+            href="mailto:gokul23gopakumar@gmail.com"
+            target="_blank"
+            rel="noreferrer"
+            className="p-3.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--accent)] transition-colors flex items-center gap-3"
+          >
+            <Mail className="w-4 h-4 text-[var(--accent)] shrink-0" />
+            <div>
+              <div className="font-semibold text-xs text-[var(--text-primary)]">Email</div>
+              <div className="text-[11px] text-[var(--text-muted)]">gokul23gopakumar@gmail.com</div>
             </div>
           </a>
         </div>
