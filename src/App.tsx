@@ -6,6 +6,7 @@ import { FileDropzone } from './components/FileDropzone';
 import { Workspace } from './components/Workspace';
 import { AdBanner } from './components/AdBanner';
 import { Footer } from './components/Footer';
+import { ConsentBanner } from './components/ConsentBanner';
 import { ParsedRequirement } from './types';
 import { parseInstructions } from './utils/instructionParser';
 
@@ -190,8 +191,9 @@ export const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Footer */}
+      {/* Footer & Privacy Consent Banner */}
       <Footer />
+      <ConsentBanner />
     </div>
   );
 };
