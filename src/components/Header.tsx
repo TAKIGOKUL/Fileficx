@@ -1,5 +1,5 @@
-import React from 'react';
-import { Sun, Moon, Zap, RotateCcw } from 'lucide-react';
+import React, { useState } from 'react';
+import { Sun, Moon, Zap, RotateCcw, Menu, X, BookOpen, User, Mail, Shield } from 'lucide-react';
 
 interface HeaderProps {
   currentTheme: 'light' | 'dark';
@@ -14,6 +14,15 @@ export const Header: React.FC<HeaderProps> = ({
   hasFile = false,
   onTryAnother
 }) => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const triggerModal = (type: string) => {
+    setMobileMenuOpen(false);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('open_footer_modal', { detail: type }));
+    }
+  };
+
   return (
     <header className="w-full bg-[var(--bg-card)]/95 backdrop-blur-md border-b border-[var(--border-subtle)] px-4 sm:px-8 py-3 transition-colors duration-200 sticky top-0 z-40">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
@@ -27,6 +36,38 @@ export const Header: React.FC<HeaderProps> = ({
             Fileficx
           </span>
         </div>
+
+        {/* Center Desktop Navigation Menu */}
+        <nav className="hidden md:flex items-center gap-6 text-xs font-semibold text-[var(--text-muted)]">
+          <button
+            onClick={() => triggerModal('guide')}
+            className="hover:text-[var(--text-primary)] transition-colors cursor-pointer flex items-center gap-1.5"
+          >
+            <BookOpen className="w-3.5 h-3.5 text-[var(--accent)]" />
+            <span>Portal Guides</span>
+          </button>
+          <button
+            onClick={() => triggerModal('about')}
+            className="hover:text-[var(--text-primary)] transition-colors cursor-pointer flex items-center gap-1.5"
+          >
+            <User className="w-3.5 h-3.5 text-[var(--accent)]" />
+            <span>About Us</span>
+          </button>
+          <button
+            onClick={() => triggerModal('contact')}
+            className="hover:text-[var(--text-primary)] transition-colors cursor-pointer flex items-center gap-1.5"
+          >
+            <Mail className="w-3.5 h-3.5 text-[var(--accent)]" />
+            <span>Contact Us</span>
+          </button>
+          <button
+            onClick={() => triggerModal('privacy')}
+            className="hover:text-[var(--text-primary)] transition-colors cursor-pointer flex items-center gap-1.5"
+          >
+            <Shield className="w-3.5 h-3.5 text-[var(--accent)]" />
+            <span>Privacy Policy</span>
+          </button>
+        </nav>
 
         {/* Center / Right Controls */}
         <div className="flex items-center gap-3">
@@ -55,9 +96,52 @@ export const Header: React.FC<HeaderProps> = ({
               <Sun className="w-5 h-5" />
             )}
           </button>
+
+          {/* Mobile Menu Toggle */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 rounded-xl text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer"
+            aria-label="Toggle navigation menu"
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
         </div>
 
       </div>
+
+      {/* Mobile Navigation Dropdown */}
+      {mobileMenuOpen && (
+        <div className="md:hidden border-t border-[var(--border-subtle)] mt-3 pt-3 pb-2 space-y-2 text-xs font-semibold text-[var(--text-muted)] animate-slide-up">
+          <button
+            onClick={() => triggerModal('guide')}
+            className="w-full text-left px-3 py-2 rounded-lg hover:bg-[var(--bg-card-hover)] flex items-center gap-2"
+          >
+            <BookOpen className="w-4 h-4 text-[var(--accent)]" />
+            <span>Portal Guides & Requirements</span>
+          </button>
+          <button
+            onClick={() => triggerModal('about')}
+            className="w-full text-left px-3 py-2 rounded-lg hover:bg-[var(--bg-card-hover)] flex items-center gap-2"
+          >
+            <User className="w-4 h-4 text-[var(--accent)]" />
+            <span>About Us & Creator</span>
+          </button>
+          <button
+            onClick={() => triggerModal('contact')}
+            className="w-full text-left px-3 py-2 rounded-lg hover:bg-[var(--bg-card-hover)] flex items-center gap-2"
+          >
+            <Mail className="w-4 h-4 text-[var(--accent)]" />
+            <span>Contact Us</span>
+          </button>
+          <button
+            onClick={() => triggerModal('privacy')}
+            className="w-full text-left px-3 py-2 rounded-lg hover:bg-[var(--bg-card-hover)] flex items-center gap-2"
+          >
+            <Shield className="w-4 h-4 text-[var(--accent)]" />
+            <span>Privacy Policy & Terms</span>
+          </button>
+        </div>
+      )}
     </header>
   );
 };
