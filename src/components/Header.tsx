@@ -1,49 +1,62 @@
-import React, { useState, useEffect } from 'react';
-import { ShieldCheck, Cpu, Terminal } from 'lucide-react';
+import React from 'react';
+import { Sun, Moon, Zap, RotateCcw } from 'lucide-react';
 
-export const Header: React.FC = () => {
-  const [timeStr, setTimeStr] = useState<string>('');
+interface HeaderProps {
+  currentTheme: 'light' | 'dark';
+  onToggleTheme: () => void;
+  hasFile?: boolean;
+  onTryAnother?: () => void;
+}
 
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      setTimeStr(now.toISOString().replace('T', ' ').substring(0, 19) + ' UTC');
-    };
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
+export const Header: React.FC<HeaderProps> = ({
+  currentTheme,
+  onToggleTheme,
+  hasFile = false,
+  onTryAnother
+}) => {
   return (
-    <header className="border-b-2 border-[#111111] bg-[#F4F4F0] p-4">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3">
-            <span className="bg-[#111111] text-white px-2 py-0.5 text-xs font-bold tracking-widest uppercase">
-              REGISTER NO. 849-B
-            </span>
-            <span className="text-xs font-bold uppercase tracking-wider text-[#E63946] flex items-center gap-1">
-              <ShieldCheck className="w-3.5 h-3.5 inline" /> 100% CLIENT-SIDE PRIVACY (WASM)
-            </span>
+    <header className="w-full bg-[var(--bg-card)]/95 backdrop-blur-md border-b border-[var(--border-subtle)] px-4 sm:px-8 py-3 transition-colors duration-200 sticky top-0 z-40">
+      <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+        
+        {/* Brand Logo */}
+        <div className="flex items-center gap-2.5 cursor-pointer" onClick={onTryAnother}>
+          <div className="w-9 h-9 rounded-xl bg-[var(--accent)] flex items-center justify-center text-white shadow-md shadow-[var(--accent)]/30">
+            <Zap className="w-5 h-5 fill-current" />
           </div>
-          <h1 className="text-2xl md:text-3xl font-black tracking-tight mt-1 text-[#111111] swiss-heading uppercase">
-            FILEFICX // INSTRUCTION-DRIVEN DOCUMENT & IMAGE ARCHIVER
-          </h1>
-          <p className="text-xs text-[#555555] font-mono mt-0.5">
-            Automated official parameter parsing & precise compression for government, visa & university portals.
-          </p>
+          <span className="text-2xl font-black tracking-tight text-[var(--text-primary)]">
+            Fileficx
+          </span>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3 text-xs">
-          <div className="border-2 border-[#111111] px-3 py-1.5 bg-white flex items-center gap-2">
-            <Terminal className="w-3.5 h-3.5 text-[#111111]" />
-            <span className="font-bold">{timeStr || 'SYSTEM ACTIVE'}</span>
-          </div>
-          <div className="border-2 border-[#111111] px-3 py-1.5 bg-[#E63946] text-white font-bold tracking-wider flex items-center gap-1.5">
-            <Cpu className="w-3.5 h-3.5" />
-            <span>ENGINE: READY</span>
-          </div>
+        {/* Center / Right Controls */}
+        <div className="flex items-center gap-3">
+          {/* Try Another File button - shown when a file is loaded */}
+          {hasFile && onTryAnother && (
+            <button
+              onClick={onTryAnother}
+              className="btn btn-primary text-xs sm:text-sm py-2 px-3.5 sm:px-4 rounded-full flex items-center gap-2 cursor-pointer shadow-md hover:scale-[1.02] active:scale-95 transition-all"
+              title="Return to upload view to select another file"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span className="font-bold">Try Another File</span>
+            </button>
+          )}
+
+          {/* Single-click Theme Toggle — moon in light mode, sun in dark mode */}
+          <button
+            onClick={onToggleTheme}
+            className="p-2 rounded-full text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
+            title={currentTheme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+            aria-label="Toggle Theme"
+          >
+            {currentTheme === 'light' ? (
+              <Moon className="w-5 h-5" />
+            ) : (
+              <Sun className="w-5 h-5" />
+            )}
+          </button>
         </div>
+
       </div>
     </header>
   );

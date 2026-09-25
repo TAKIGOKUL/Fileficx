@@ -1,19 +1,16 @@
-export type FileType = 'image/jpeg' | 'image/png' | 'image/webp' | 'application/pdf' | 'unknown';
+export type SupportedFormat = 'jpg' | 'png' | 'webp' | 'pdf';
 
 export interface ParsedRequirement {
-  rawText: string;
-  targetFormat?: 'JPG' | 'PNG' | 'PDF' | 'WEBP';
-  minSizeKB?: number;
-  maxSizeKB?: number;
-  targetSizeKB?: number;
+  format?: SupportedFormat;
   width?: number;
   height?: number;
-  unit?: 'px' | 'cm' | 'mm' | 'in';
+  minSize?: number; // KB
+  maxSize?: number; // KB
+  targetSize?: number; // KB (auto: 90% of max or midpoint)
   dpi?: number;
-  aspectRatio?: string;
-  isPassportPhoto?: boolean;
-  isSignature?: boolean;
-  backgroundRequirement?: string;
+  background?: string;
+  colorMode?: 'rgb' | 'grayscale' | 'bw';
+  rawText: string;
   detectedRules: string[];
 }
 
@@ -22,60 +19,67 @@ export interface ProcessingMetadata {
   originalSize: number;
   originalDimensions?: { width: number; height: number };
   originalFormat: string;
+  originalDpi?: number;
+  originalColorMode?: string;
+  pageCount?: number;
   processedBlob?: Blob;
   processedSize?: number;
   processedDimensions?: { width: number; height: number };
   processedFormat?: string;
+  processedUrl?: string;
   compressionRatio?: number;
   processingTimeMs?: number;
+  downloadFilename?: string;
 }
 
+export type ResizeMode = 'pixels' | 'percent' | 'longest' | 'shortest' | 'ratio';
+
 export interface ImageProcessingConfig {
-  targetFormat: 'image/jpeg' | 'image/png' | 'image/webp';
-  targetMaxKB?: number;
-  exactWidth?: number;
-  exactHeight?: number;
+  targetFormat: SupportedFormat;
+  resizeMode: ResizeMode;
+  exactWidth: number;
+  exactHeight: number;
+  aspectLocked: boolean;
   scalePercent: number;
-  maintainAspectRatio: boolean;
-  aspectRatioPreset?: 'free' | '1:1' | '3.5:4.5' | '2:2' | '4:3' | '16:9' | 'custom';
-  quality: number;
+  longestSide: number;
+  shortestSide: number;
+  aspectRatioPreset: 'free' | '1:1' | '3.5:4.5' | '2:2' | '4:3' | '16:9' | '3:4' | '2:3';
+  targetSizeKB?: number;
+  quality: number; // 1 - 100
   dpi: number;
-  crop?: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
-  rotation: 0 | 90 | 180 | 270;
-  flipH: boolean;
-  flipV: boolean;
-  grayscale: boolean;
-  contrast: number;
-  brightness: number;
+  colorMode: 'rgb' | 'grayscale' | 'bw';
+  backgroundFill: string;
 }
 
 export interface PDFProcessingConfig {
-  mode: 'compress' | 'resize' | 'merge' | 'split';
+  mode: 'compress' | 'resize' | 'split' | 'merge' | 'pdf-to-images' | 'image-to-pdf' | 'rotate' | 'remove';
   targetMaxKB?: number;
+  targetSizeKB?: number;
+  splitRange?: string; // e.g. "1-3, 5, 7-9"
+  rotateAngle?: 90 | 180 | 270;
+  removePages?: string; // e.g. "2, 4"
+  quality?: number;
+  imageFormat?: 'jpg' | 'png';
   pageFormat?: 'A4' | 'Letter' | 'Legal' | 'Custom';
-  customWidthPt?: number;
-  customHeightPt?: number;
-  marginPt?: number;
-  splitRange?: string;
+  pageSize?: 'A4' | 'Original' | 'Letter';
 }
 
-export interface PresetRequirement {
+export interface PortalPreset {
   id: string;
-  title: string;
-  category: 'VISA' | 'GOVERNMENT' | 'PASSPORT' | 'EXAM' | 'CUSTOM';
+  name: string;
+  category: 'GOVERNMENT' | 'EXAM' | 'PASSPORT' | 'MNC';
+  badge: string;
   description: string;
-  sampleInstruction: string;
-  targetFormat: 'JPG' | 'PNG' | 'PDF';
-  maxSizeKB?: number;
-  minSizeKB?: number;
-  width?: number;
-  height?: number;
-  unit: 'px' | 'cm' | 'mm' | 'in';
-  dpi: number;
-  aspectRatio?: string;
+  instructionSample: string;
+  requirements: {
+    format: SupportedFormat;
+    width: number;
+    height: number;
+    minSize?: number;
+    maxSize: number;
+    targetSize: number;
+    dpi: number;
+    colorMode: 'rgb' | 'grayscale' | 'bw';
+    background?: string;
+  };
 }

@@ -1,27 +1,119 @@
+import { PDFDocument } from 'pdf-lib';
 import { ImageProcessingConfig, ProcessingMetadata } from '../types';
 
 export function formatFileSize(bytes: number): string {
-  if (bytes === 0) return '0 B';
+  if (!bytes || bytes === 0) return '0 B';
   const k = 1024;
   const sizes = ['B', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
 }
 
-export function getImageDimensions(file: File | Blob): Promise<{ width: number; height: number }> {
+export function getImageDimensions(file: File | Blob): Promise<{ width: number; height: number; colorMode: string }> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     const url = URL.createObjectURL(file);
     img.onload = () => {
       URL.revokeObjectURL(url);
-      resolve({ width: img.naturalWidth, height: img.naturalHeight });
+      
+      // Determine approximate color mode via canvas
+      let colorMode = 'RGB';
+      try {
+        const sampleCanvas = document.createElement('canvas');
+        sampleCanvas.width = Math.min(img.naturalWidth, 100);
+        sampleCanvas.height = Math.min(img.naturalHeight, 100);
+        const sCtx = sampleCanvas.getContext('2d', { willReadFrequently: true });
+        if (sCtx) {
+          sCtx.drawImage(img, 0, 0, sampleCanvas.width, sampleCanvas.height);
+          const imgData = sCtx.getImageData(0, 0, sampleCanvas.width, sampleCanvas.height).data;
+          let isGray = true;
+          for (let i = 0; i < imgData.length; i += 16) {
+            const r = imgData[i];
+            const g = imgData[i + 1];
+            const b = imgData[i + 2];
+            if (Math.abs(r - g) > 8 || Math.abs(r - b) > 8) {
+              isGray = false;
+              break;
+            }
+          }
+          if (isGray) colorMode = 'Grayscale';
+        }
+      } catch {
+        colorMode = 'RGB';
+      }
+
+      resolve({
+        width: img.naturalWidth,
+        height: img.naturalHeight,
+        colorMode
+      });
     };
     img.onerror = () => {
       URL.revokeObjectURL(url);
-      reject(new Error('Failed to load image for dimension measurement'));
+      reject(new Error('Failed to load image for measurement'));
     };
     img.src = url;
   });
+}
+
+export function calculateOutputDimensions(
+  origW: number,
+  origH: number,
+  config: ImageProcessingConfig
+): { targetW: number; targetH: number } {
+  let targetW = origW;
+  let targetH = origH;
+
+  switch (config.resizeMode) {
+    case 'pixels':
+      targetW = (config.exactWidth && config.exactWidth > 0) ? config.exactWidth : origW;
+      targetH = (config.exactHeight && config.exactHeight > 0) ? config.exactHeight : origH;
+      break;
+
+    case 'percent':
+      const p = Math.max(1, config.scalePercent || 100) / 100;
+      targetW = Math.round(origW * p);
+      targetH = Math.round(origH * p);
+      break;
+
+    case 'longest':
+      const longest = config.longestSide || origW;
+      if (origW >= origH) {
+        targetW = longest;
+        targetH = Math.round((longest / origW) * origH);
+      } else {
+        targetH = longest;
+        targetW = Math.round((longest / origH) * origW);
+      }
+      break;
+
+    case 'shortest':
+      const shortest = config.shortestSide || origH;
+      if (origW <= origH) {
+        targetW = shortest;
+        targetH = Math.round((shortest / origW) * origH);
+      } else {
+        targetH = shortest;
+        targetW = Math.round((shortest / origH) * origW);
+      }
+      break;
+
+    case 'ratio':
+      if (config.aspectRatioPreset && config.aspectRatioPreset !== 'free') {
+        const [rW, rH] = config.aspectRatioPreset.split(':').map(Number);
+        if (rW && rH) {
+          const ratio = rW / rH;
+          targetW = config.exactWidth || origW;
+          targetH = Math.round(targetW / ratio);
+        }
+      }
+      break;
+  }
+
+  return {
+    targetW: Math.max(1, targetW),
+    targetH: Math.max(1, targetH)
+  };
 }
 
 export async function processImage(
@@ -29,7 +121,7 @@ export async function processImage(
   config: ImageProcessingConfig
 ): Promise<ProcessingMetadata> {
   const startTime = performance.now();
-  const originalDims = await getImageDimensions(file);
+  const originalMeta = await getImageDimensions(file);
 
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -39,119 +131,94 @@ export async function processImage(
       URL.revokeObjectURL(url);
 
       try {
+        const { targetW, targetH } = calculateOutputDimensions(img.naturalWidth, img.naturalHeight, config);
+
         const canvas = document.createElement('canvas');
+        canvas.width = targetW;
+        canvas.height = targetH;
         const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
         if (!ctx) {
           throw new Error('Canvas 2D context unavailable');
         }
 
-        let sx = 0;
-        let sy = 0;
-        let sWidth = img.naturalWidth;
-        let sHeight = img.naturalHeight;
-
-        if (config.crop) {
-          sx = config.crop.x;
-          sy = config.crop.y;
-          sWidth = config.crop.width;
-          sHeight = config.crop.height;
-        }
-
-        let destWidth = config.exactWidth || Math.round(sWidth * (config.scalePercent / 100));
-        let destHeight = config.exactHeight || Math.round(sHeight * (config.scalePercent / 100));
-
-        if (config.maintainAspectRatio && !config.exactHeight && config.exactWidth) {
-          destHeight = Math.round((destWidth / sWidth) * sHeight);
-        } else if (config.maintainAspectRatio && config.exactHeight && !config.exactWidth) {
-          destWidth = Math.round((destHeight / sHeight) * sWidth);
-        }
-
-        const isRotated90or270 = config.rotation === 90 || config.rotation === 270;
-        canvas.width = isRotated90or270 ? destHeight : destWidth;
-        canvas.height = isRotated90or270 ? destWidth : destHeight;
-
-        ctx.save();
-        ctx.translate(canvas.width / 2, canvas.height / 2);
-
-        if (config.rotation !== 0) {
-          ctx.rotate((config.rotation * Math.PI) / 180);
-        }
-        if (config.flipH) {
-          ctx.scale(-1, 1);
-        }
-        if (config.flipV) {
-          ctx.scale(1, -1);
-        }
-
-        if (config.targetFormat === 'image/jpeg') {
-          ctx.fillStyle = '#FFFFFF';
-          ctx.fillRect(-destWidth / 2, -destHeight / 2, destWidth, destHeight);
+        // Background filling for transparent / PNG -> JPG or custom fill
+        const isJpg = config.targetFormat === 'jpg';
+        if (isJpg || config.backgroundFill) {
+          ctx.fillStyle = config.backgroundFill || '#FFFFFF';
+          ctx.fillRect(0, 0, targetW, targetH);
         }
 
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
-        ctx.drawImage(img, sx, sy, sWidth, sHeight, -destWidth / 2, -destHeight / 2, destWidth, destHeight);
-        ctx.restore();
+        ctx.drawImage(img, 0, 0, targetW, targetH);
 
-        if (config.grayscale || config.contrast !== 0 || config.brightness !== 0) {
-          const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        // Color Mode processing
+        if (config.colorMode === 'grayscale' || config.colorMode === 'bw') {
+          const imgData = ctx.getImageData(0, 0, targetW, targetH);
           const data = imgData.data;
-          const contrastFactor = (259 * (config.contrast + 255)) / (255 * (259 - config.contrast));
 
           for (let i = 0; i < data.length; i += 4) {
-            let r = data[i];
-            let g = data[i + 1];
-            let b = data[i + 2];
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+            // Standard perceptual luminance
+            const gray = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
 
-            if (config.grayscale) {
-              const avg = 0.299 * r + 0.587 * g + 0.114 * b;
-              r = avg;
-              g = avg;
-              b = avg;
+            if (config.colorMode === 'bw') {
+              const val = gray >= 128 ? 255 : 0;
+              data[i] = val;
+              data[i + 1] = val;
+              data[i + 2] = val;
+            } else {
+              data[i] = gray;
+              data[i + 1] = gray;
+              data[i + 2] = gray;
             }
-
-            if (config.brightness !== 0) {
-              r += config.brightness;
-              g += config.brightness;
-              b += config.brightness;
-            }
-
-            if (config.contrast !== 0) {
-              r = contrastFactor * (r - 128) + 128;
-              g = contrastFactor * (g - 128) + 128;
-              b = contrastFactor * (b - 128) + 128;
-            }
-
-            data[i] = Math.min(255, Math.max(0, r));
-            data[i + 1] = Math.min(255, Math.max(0, g));
-            data[i + 2] = Math.min(255, Math.max(0, b));
           }
-
           ctx.putImageData(imgData, 0, 0);
         }
 
         let finalBlob: Blob;
-        if (config.targetMaxKB && config.targetMaxKB > 0 && config.targetFormat !== 'image/png') {
-          finalBlob = await smartCompressToTargetKB(canvas, config.targetFormat, config.targetMaxKB);
+        let finalFormat = config.targetFormat;
+
+        // Image to PDF Conversion
+        if (config.targetFormat === 'pdf') {
+          finalBlob = await convertCanvasToPDF(canvas, config.dpi || 200);
         } else {
-          finalBlob = await canvasToBlob(canvas, config.targetFormat, config.quality);
+          // Image formats: JPG, PNG, WEBP
+          const mimeType = getMimeType(config.targetFormat);
+
+          if (config.targetSizeKB && config.targetSizeKB > 0 && config.targetFormat !== 'png') {
+            // Target size compression loop
+            finalBlob = await targetSizeCompress(canvas, mimeType, config.targetSizeKB);
+          } else {
+            const qualityRatio = Math.max(0.05, Math.min(1.0, config.quality / 100));
+            finalBlob = await canvasToBlob(canvas, mimeType, qualityRatio);
+          }
         }
 
         const endTime = performance.now();
-        const finalDims = { width: canvas.width, height: canvas.height };
+        const baseName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+        const ext = config.targetFormat === 'jpg' ? 'jpg' : config.targetFormat;
+        const sizeKB = Math.round(finalBlob.size / 1024);
+        const downloadFilename = `${baseName}_${targetW}x${targetH}_${sizeKB}KB.${ext}`;
 
         resolve({
           originalName: file.name,
           originalSize: file.size,
-          originalDimensions: originalDims,
-          originalFormat: file.type,
+          originalDimensions: { width: originalMeta.width, height: originalMeta.height },
+          originalFormat: file.type || 'image',
+          originalDpi: config.dpi || 72,
+          originalColorMode: originalMeta.colorMode,
           processedBlob: finalBlob,
           processedSize: finalBlob.size,
-          processedDimensions: finalDims,
-          processedFormat: config.targetFormat,
+          processedDimensions: { width: targetW, height: targetH },
+          processedFormat: finalFormat,
+          processedUrl: URL.createObjectURL(finalBlob),
           compressionRatio: Math.round(((file.size - finalBlob.size) / file.size) * 100),
-          processingTimeMs: Math.round(endTime - startTime)
+          processingTimeMs: Math.round(endTime - startTime),
+          downloadFilename
         });
       } catch (err) {
         reject(err);
@@ -167,74 +234,123 @@ export async function processImage(
   });
 }
 
-function canvasToBlob(canvas: HTMLCanvasElement, format: string, quality: number): Promise<Blob> {
+function getMimeType(fmt: string): string {
+  if (fmt.includes('png')) return 'image/png';
+  if (fmt.includes('webp')) return 'image/webp';
+  if (fmt.includes('pdf')) return 'application/pdf';
+  return 'image/jpeg';
+}
+
+export function canvasToBlob(canvas: HTMLCanvasElement, mimeType: string, quality: number): Promise<Blob> {
   return new Promise((resolve, reject) => {
     canvas.toBlob(
       (blob) => {
         if (blob) resolve(blob);
-        else reject(new Error('Canvas export to blob returned null'));
+        else reject(new Error('Canvas export to blob failed'));
       },
-      format,
+      mimeType,
       quality
     );
   });
 }
 
-async function smartCompressToTargetKB(
+/**
+ * Target size compression loop based on user spec:
+ * 1. Start at quality = 92
+ * 2. Compress -> check output size
+ * 3. If over target -> quality -= 5, repeat
+ * 4. If under target by > 20% -> quality += 2, repeat
+ * 5. Stop when within +-10% of target or quality < 10
+ */
+async function targetSizeCompress(
   canvas: HTMLCanvasElement,
-  format: string,
+  mimeType: string,
   targetKB: number
 ): Promise<Blob> {
   const targetBytes = targetKB * 1024;
-  let minQuality = 0.05;
-  let maxQuality = 0.98;
+  let quality = 92;
   let bestBlob: Blob | null = null;
   let iterations = 0;
-  const maxIterations = 8;
+  const maxIterations = 16;
 
-  const initialBlob = await canvasToBlob(canvas, format, 0.95);
-  if (initialBlob.size <= targetBytes) {
-    return initialBlob;
-  }
-
-  while (iterations < maxIterations && minQuality <= maxQuality) {
+  while (iterations < maxIterations && quality >= 10 && quality <= 98) {
     iterations++;
-    const midQuality = (minQuality + maxQuality) / 2;
-    const blob = await canvasToBlob(canvas, format, midQuality);
+    const qRatio = quality / 100;
+    const blob = await canvasToBlob(canvas, mimeType, qRatio);
+    bestBlob = blob;
 
-    if (blob.size <= targetBytes) {
-      bestBlob = blob;
-      minQuality = midQuality + 0.05;
+    const size = blob.size;
+    const diffPercent = (size - targetBytes) / targetBytes;
+
+    // Within +-10% of target?
+    if (Math.abs(diffPercent) <= 0.10 && size <= targetBytes) {
+      return blob;
+    }
+
+    if (size > targetBytes) {
+      quality -= 5;
+    } else if (diffPercent < -0.20 && quality <= 94) {
+      quality += 2;
     } else {
-      maxQuality = midQuality - 0.05;
+      // Under target within 0% to 20%
+      return blob;
     }
   }
 
-  if (bestBlob) {
-    return bestBlob;
-  }
+  // If still over target with quality=10, scale canvas down slightly to respect strict portal max size
+  if (bestBlob && bestBlob.size > targetBytes) {
+    let scale = 0.9;
+    const tempCanvas = document.createElement('canvas');
 
-  let scale = 0.9;
-  const tempCanvas = document.createElement('canvas');
+    while (scale >= 0.4) {
+      const scaledW = Math.max(20, Math.round(canvas.width * scale));
+      const scaledH = Math.max(20, Math.round(canvas.height * scale));
+      tempCanvas.width = scaledW;
+      tempCanvas.height = scaledH;
 
-  while (scale >= 0.3) {
-    const currentWidth = Math.round(canvas.width * scale);
-    const currentHeight = Math.round(canvas.height * scale);
-    tempCanvas.width = currentWidth;
-    tempCanvas.height = currentHeight;
-
-    const tCtx = tempCanvas.getContext('2d');
-    if (tCtx) {
-      tCtx.fillStyle = '#FFFFFF';
-      tCtx.fillRect(0, 0, currentWidth, currentHeight);
-      tCtx.drawImage(canvas, 0, 0, currentWidth, currentHeight);
-      const blob = await canvasToBlob(tempCanvas, format, 0.7);
-      if (blob.size <= targetBytes) {
-        return blob;
+      const tCtx = tempCanvas.getContext('2d');
+      if (tCtx) {
+        tCtx.fillStyle = '#FFFFFF';
+        tCtx.fillRect(0, 0, scaledW, scaledH);
+        tCtx.drawImage(canvas, 0, 0, scaledW, scaledH);
+        const testBlob = await canvasToBlob(tempCanvas, mimeType, 0.7);
+        if (testBlob.size <= targetBytes) {
+          return testBlob;
+        }
       }
+      scale -= 0.1;
     }
-    scale -= 0.15;
   }
 
-  return await canvasToBlob(canvas, format, 0.2);
+  return bestBlob || await canvasToBlob(canvas, mimeType, 0.5);
+}
+
+/**
+ * Image to PDF with print-accurate DPI calculation:
+ * pageWidth = imageWidthPx / targetDPI * 72 (PDF points)
+ * pageHeight = imageHeightPx / targetDPI * 72
+ */
+async function convertCanvasToPDF(canvas: HTMLCanvasElement, dpi: number = 200): Promise<Blob> {
+  const pdfDoc = await PDFDocument.create();
+  
+  // Calculate page points based on target DPI (72 points = 1 inch)
+  const pageWidthPt = (canvas.width / dpi) * 72;
+  const pageHeightPt = (canvas.height / dpi) * 72;
+
+  const page = pdfDoc.addPage([pageWidthPt, pageHeightPt]);
+  
+  // Export canvas as JPEG
+  const jpgBlob = await canvasToBlob(canvas, 'image/jpeg', 0.92);
+  const jpgBytes = await jpgBlob.arrayBuffer();
+  const embeddedImage = await pdfDoc.embedJpg(jpgBytes);
+
+  page.drawImage(embeddedImage, {
+    x: 0,
+    y: 0,
+    width: pageWidthPt,
+    height: pageHeightPt
+  });
+
+  const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
+  return new Blob([pdfBytes.buffer as ArrayBuffer], { type: 'application/pdf' });
 }
