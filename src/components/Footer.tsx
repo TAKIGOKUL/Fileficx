@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart, Mail, Twitter, Github, Shield, Sparkles, FileText, User, Lock, ArrowUpRight } from 'lucide-react';
+import { Code2, Github, Twitter, Linkedin, Instagram, Youtube } from 'lucide-react';
 
 interface FooterProps {
   onNavigate?: (page: string) => void;
@@ -18,122 +18,123 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate = () => {} }) => {
   };
 
   return (
-    <footer className="w-full border-t border-[var(--border-subtle)] pt-12 pb-14 text-xs text-[var(--text-muted)] mt-16 transition-colors bg-[var(--bg-card)]/60 backdrop-blur-md">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-10">
+    <footer className="w-full border-t border-[var(--border-subtle)] pt-14 pb-8 text-xs text-[var(--text-muted)] mt-20 transition-colors bg-[var(--bg-card)]/70 backdrop-blur-md overflow-hidden">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-12">
         
         {/* Top Footer Navigation Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-8 border-b border-[var(--border-subtle)] text-left">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 text-left">
           
-          {/* Col 1 & 2: Brand & Mission */}
-          <div className="md:col-span-2 space-y-3">
-            <div className="flex items-center gap-2.5">
-              <button
-                onClick={() => handleNav('home')}
-                className="text-xl font-black tracking-tight text-[var(--text-primary)] hover:text-[var(--accent)] transition-colors cursor-pointer"
-              >
+          {/* Brand & Description (Col 1-6) */}
+          <div className="md:col-span-6 space-y-3.5">
+            <div 
+              onClick={() => handleNav('home')}
+              className="inline-flex items-center gap-2 cursor-pointer group"
+            >
+              <div className="w-7 h-7 rounded-lg bg-[var(--accent)] text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+                <Code2 className="w-4 h-4" />
+              </div>
+              <span className="text-lg font-black tracking-tight text-[var(--text-primary)]">
                 Fileficx
-              </button>
-              <span className="inline-flex items-center gap-1 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-[var(--accent-subtle)] text-[var(--accent)] border border-[var(--accent)]/20">
-                <Lock className="w-3 h-3 text-emerald-500" />
-                Zero-Server Privacy Vault
               </span>
             </div>
-            <p className="text-xs text-[var(--text-muted)] leading-relaxed max-w-md font-medium">
-              Empowering job applicants, students, and creators worldwide with instant, in-browser document & photo optimization. No files leave your device.
+            <p className="text-xs text-[var(--text-muted)] leading-relaxed max-w-sm font-normal">
+              Instant, in-browser document & photo optimization engineered for strict portal requirements. All processing occurs locally inside WebAssembly RAM with complete privacy.
             </p>
-            
-            {/* Social Links */}
-            <div className="flex flex-wrap items-center gap-2 pt-1 text-[11px]">
-              <button
-                onClick={() => handleNav('contact')}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[var(--bg-primary)] border border-[var(--border-subtle)] hover:border-[var(--accent)] text-[var(--text-primary)] font-semibold transition-all cursor-pointer hover:scale-[1.02] active:scale-95"
-              >
-                <Mail className="w-3.5 h-3.5 text-[var(--accent)]" />
-                <span>Contact Support</span>
-              </button>
-
-              <a
-                href="https://github.com/TAKIGOKUL/Fileficx.git"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[var(--bg-primary)] border border-[var(--border-subtle)] hover:border-[var(--accent)] text-[var(--text-primary)] font-semibold transition-all hover:scale-[1.02] active:scale-95"
-              >
-                <Github className="w-3.5 h-3.5 text-[var(--accent)]" />
-                <span>GitHub</span>
-                <ArrowUpRight className="w-3 h-3 opacity-50" />
-              </a>
-
-              <a
-                href="https://x.com"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[var(--bg-primary)] border border-[var(--border-subtle)] hover:border-[var(--accent)] text-[var(--text-primary)] font-semibold transition-all hover:scale-[1.02] active:scale-95"
-              >
-                <Twitter className="w-3.5 h-3.5 text-[var(--accent)]" />
-                <span>Twitter / X</span>
-                <ArrowUpRight className="w-3 h-3 opacity-50" />
-              </a>
-            </div>
           </div>
 
-          {/* Col 3: Navigation */}
-          <div className="space-y-3">
-            <h4 className="font-extrabold uppercase tracking-wider text-[10px] text-[var(--text-primary)]">
-              Trust & Governance
+          {/* Company Column (Col 7-9) */}
+          <div className="md:col-span-3 space-y-3">
+            <h4 className="font-bold text-xs text-[var(--text-primary)] tracking-wide">
+              Company
             </h4>
-            <ul className="space-y-2 text-xs font-semibold">
+            <ul className="space-y-2 text-xs font-medium">
               <li>
                 <button
-                  onClick={() => handleNav('about')}
-                  className="hover:text-[var(--accent)] transition-colors cursor-pointer flex items-center gap-2 group"
+                  onClick={() => handleNav('home')}
+                  className="hover:text-[var(--accent)] transition-colors cursor-pointer"
                 >
-                  <User className="w-3.5 h-3.5 text-[var(--accent)] group-hover:scale-110 transition-transform" />
-                  <span>About Us & Story</span>
+                  Home
                 </button>
               </li>
               <li>
                 <button
-                  onClick={() => handleNav('contact')}
-                  className="hover:text-[var(--accent)] transition-colors cursor-pointer flex items-center gap-2 group"
+                  onClick={() => handleNav('about')}
+                  className="hover:text-[var(--accent)] transition-colors cursor-pointer"
                 >
-                  <Mail className="w-3.5 h-3.5 text-[var(--accent)] group-hover:scale-110 transition-transform" />
-                  <span>Contact Us & Support</span>
+                  About Us
                 </button>
               </li>
               <li>
                 <button
                   onClick={() => handleNav('privacy')}
-                  className="hover:text-[var(--accent)] transition-colors cursor-pointer flex items-center gap-2 group"
+                  className="hover:text-[var(--accent)] transition-colors cursor-pointer"
                 >
-                  <Shield className="w-3.5 h-3.5 text-[var(--accent)] group-hover:scale-110 transition-transform" />
-                  <span>Privacy Policy & GDPR</span>
+                  Privacy Policy
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleNav('terms')}
+                  className="hover:text-[var(--accent)] transition-colors cursor-pointer"
+                >
+                  Terms & Conditions
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleNav('contact')}
+                  className="hover:text-[var(--accent)] transition-colors cursor-pointer"
+                >
+                  Contact Us
                 </button>
               </li>
             </ul>
           </div>
 
-          {/* Col 4: Preferences & Legal */}
-          <div className="space-y-3">
-            <h4 className="font-extrabold uppercase tracking-wider text-[10px] text-[var(--text-primary)]">
-              Legal & Privacy Settings
+          {/* Tools & Settings Column (Col 10-12) */}
+          <div className="md:col-span-3 space-y-3">
+            <h4 className="font-bold text-xs text-[var(--text-primary)] tracking-wide">
+              Tools & Settings
             </h4>
-            <ul className="space-y-2 text-xs font-semibold">
+            <ul className="space-y-2 text-xs font-medium">
               <li>
                 <button
-                  onClick={() => handleNav('terms')}
-                  className="hover:text-[var(--accent)] transition-colors cursor-pointer flex items-center gap-2 group"
+                  onClick={() => handleNav('home')}
+                  className="hover:text-[var(--accent)] transition-colors cursor-pointer"
                 >
-                  <FileText className="w-3.5 h-3.5 text-[var(--accent)] group-hover:scale-110 transition-transform" />
-                  <span>Terms & Conditions</span>
+                  Passport & Photo Specs
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleNav('home')}
+                  className="hover:text-[var(--accent)] transition-colors cursor-pointer"
+                >
+                  SSC & UPSC Presets
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleNav('home')}
+                  className="hover:text-[var(--accent)] transition-colors cursor-pointer"
+                >
+                  PDF Compress & Merge
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleNav('home')}
+                  className="hover:text-[var(--accent)] transition-colors cursor-pointer"
+                >
+                  DPI & Resolution Resizer
                 </button>
               </li>
               <li>
                 <button
                   onClick={openConsentPreferences}
-                  className="hover:text-[var(--accent)] transition-colors cursor-pointer flex items-center gap-2 group text-[var(--accent)] font-bold"
+                  className="hover:text-[var(--accent)] transition-colors cursor-pointer text-[var(--accent)] font-semibold"
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-[var(--accent)] group-hover:rotate-12 transition-transform" />
-                  <span>Cookie Preferences (CMP)</span>
+                  Cookie Preferences (CMP)
                 </button>
               </li>
             </ul>
@@ -141,15 +142,73 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate = () => {} }) => {
 
         </div>
 
-        {/* Bottom Bar Disclaimer */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left text-[11px] font-medium">
-          <div>
-            © {new Date().getFullYear()} Fileficx — Built securely with WebAssembly. No files are uploaded to any server.
+        {/* Massive Brand Watermark Typography */}
+        <div className="w-full overflow-hidden select-none py-2 text-center pointer-events-none">
+          <span className="block text-5xl sm:text-7xl md:text-8xl lg:text-[10.5rem] font-black tracking-tighter uppercase leading-none text-[var(--text-primary)] opacity-[0.07] dark:opacity-[0.12] transition-opacity">
+            FILEFICX
+          </span>
+        </div>
+
+        {/* Bottom Divider & Social Bar */}
+        <div className="border-t border-[var(--border-subtle)] pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-left">
+          <div className="text-[11px] text-[var(--text-muted)] font-normal flex flex-wrap items-center gap-1.5">
+            <span>Built by <strong className="text-[var(--text-primary)] font-semibold">TAKIGOKUL</strong>. Powered securely by WebAssembly. No files are uploaded to any server.</span>
+            <span>•</span>
+            <button
+              onClick={() => handleNav('privacy')}
+              className="text-[var(--text-muted)] hover:text-[var(--accent)] underline transition-colors cursor-pointer"
+            >
+              Privacy Policy
+            </button>
           </div>
-          <div className="flex items-center gap-1.5 text-[11px] text-[var(--text-muted)] font-semibold">
-            <span>Crafted with</span>
-            <Heart className="w-3.5 h-3.5 text-rose-500 fill-current inline" />
-            <span>for job seekers & creators worldwide</span>
+
+          {/* Social Icons */}
+          <div className="flex items-center gap-3 text-[var(--text-muted)]">
+            <a
+              href="https://github.com/TAKIGOKUL/Fileficx.git"
+              target="_blank"
+              rel="noreferrer"
+              className="p-1.5 rounded-full hover:text-[var(--text-primary)] hover:bg-[var(--input-inner-bg)] transition-colors"
+              aria-label="GitHub"
+            >
+              <Github className="w-4 h-4" />
+            </a>
+            <a
+              href="https://x.com"
+              target="_blank"
+              rel="noreferrer"
+              className="p-1.5 rounded-full hover:text-[var(--text-primary)] hover:bg-[var(--input-inner-bg)] transition-colors"
+              aria-label="Twitter / X"
+            >
+              <Twitter className="w-4 h-4" />
+            </a>
+            <a
+              href="https://linkedin.com"
+              target="_blank"
+              rel="noreferrer"
+              className="p-1.5 rounded-full hover:text-[var(--text-primary)] hover:bg-[var(--input-inner-bg)] transition-colors"
+              aria-label="LinkedIn"
+            >
+              <Linkedin className="w-4 h-4" />
+            </a>
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noreferrer"
+              className="p-1.5 rounded-full hover:text-[var(--text-primary)] hover:bg-[var(--input-inner-bg)] transition-colors"
+              aria-label="Instagram"
+            >
+              <Instagram className="w-4 h-4" />
+            </a>
+            <a
+              href="https://youtube.com"
+              target="_blank"
+              rel="noreferrer"
+              className="p-1.5 rounded-full hover:text-[var(--text-primary)] hover:bg-[var(--input-inner-bg)] transition-colors"
+              aria-label="YouTube"
+            >
+              <Youtube className="w-4 h-4" />
+            </a>
           </div>
         </div>
 

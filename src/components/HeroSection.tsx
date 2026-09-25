@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, CheckCircle2, Zap, Asterisk } from 'lucide-react';
+import { Sparkles, CheckCircle2 } from 'lucide-react';
 import { ParsedRequirement } from '../types';
 import { parseInstructions } from '../utils/instructionParser';
 
@@ -97,9 +97,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         </p>
 
         {/* Instruction Card */}
-        <div className="rounded-2xl border-2 border-[var(--accent)] bg-[var(--bg-card)] p-3.5 shadow-xl max-w-2xl mx-auto flex items-stretch gap-3 text-left">
+        <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-3 shadow-lg max-w-2xl mx-auto flex items-stretch gap-3 text-left">
           
-          {/* Inner Pistachio-tinted textarea with interactive typing animation */}
+          {/* Inner textarea with subtle typing animation */}
           <div
             onClick={() => {
               if (!isUserEditing) {
@@ -131,57 +131,33 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             )}
           </div>
 
-          {/* Parse Button — Idle: shimmer button; With File: rotating button with fixed text & icon and rotating side icons */}
+          {/* Action Button: Professional & Clean */}
           {hasFile ? (
-            <div className="relative shrink-0 flex items-center justify-center">
-              <div className="rotating-btn-wrapper animate-parse-ready shadow-xl">
-                {/* Continuous rotating conic gradient border */}
-                <div className="rotating-btn-border" />
-                
-                <button
-                  type="button"
-                  onClick={() => handleParse()}
-                  className="rotating-btn-inner px-3 sm:px-4 py-2 text-white flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95 hover:brightness-110"
-                  title="Click to parse requirements & start processing your file"
-                >
-                  {/* Left rotating icon */}
-                  <span className="flex items-center justify-center text-amber-300 animate-spin-conic shrink-0">
-                    <Sparkles className="w-4 h-4 fill-current" />
-                  </span>
-
-                  {/* Fixed text and center icon */}
-                  <div className="flex flex-col items-center justify-center leading-tight">
-                    <div className="flex items-center gap-1 whitespace-nowrap">
-                      <Zap className="w-4 h-4 fill-amber-300 text-amber-300 animate-pulse" />
-                      <span className="text-xs sm:text-sm font-black tracking-wide">Process Now →</span>
-                    </div>
-                    <span className="text-[9px] font-bold text-white/90 uppercase tracking-widest">Click to start</span>
-                  </div>
-
-                  {/* Right rotating icon */}
-                  <span className="flex items-center justify-center text-emerald-300 animate-spin-reverse shrink-0">
-                    <Asterisk className="w-4 h-4" />
-                  </span>
-                </button>
-              </div>
-            </div>
+            <button
+              type="button"
+              onClick={() => handleParse()}
+              className="px-5 py-2.5 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 cursor-pointer shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all duration-200 shrink-0"
+              title="Click to parse requirements & start processing your file"
+            >
+              <span>Process Now →</span>
+            </button>
           ) : (
             <button
               type="button"
               onClick={() => handleParse()}
-              className={`rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white flex flex-col items-center justify-center gap-1 text-xs font-black shadow-md cursor-pointer transition-all active:scale-95 shrink-0 w-20 sm:w-24 shimmer-btn py-2 px-3 ${
-                hasJustParsed ? 'bg-emerald-600 hover:bg-emerald-700' : ''
+              className={`rounded-xl px-4 py-2.5 bg-[var(--input-inner-bg)] hover:bg-[var(--accent-subtle)] text-[var(--text-primary)] hover:text-[var(--accent)] border border-[var(--border-subtle)] hover:border-[var(--accent)]/40 flex items-center justify-center gap-1.5 text-xs font-bold cursor-pointer transition-all duration-200 active:scale-95 shrink-0 ${
+                hasJustParsed ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/30' : ''
               }`}
               title="Parse instructions"
             >
               {hasJustParsed ? (
                 <>
-                  <CheckCircle2 className="w-5 h-5 animate-bounce" />
-                  <span>Done</span>
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  <span>Parsed</span>
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-5 h-5 fill-current" />
+                  <Sparkles className="w-4 h-4 text-[var(--accent)]" />
                   <span>Parse</span>
                 </>
               )}

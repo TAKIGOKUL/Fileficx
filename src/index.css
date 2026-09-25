@@ -85,134 +85,22 @@
 }
 
 
-/* Breathing animation for Drop Files Card */
+/* Subtle Breathe animation for Drop Files Card */
 @keyframes breathe {
   0%, 100% {
     transform: scale(1);
-    box-shadow: 0 6px 20px -2px rgba(108, 99, 255, 0.08), 0 2px 8px -2px rgba(0, 0, 0, 0.03);
-    border-color: rgba(108, 99, 255, 0.5);
+    box-shadow: 0 4px 14px -2px rgba(108, 99, 255, 0.06);
+    border-color: rgba(108, 99, 255, 0.4);
   }
   50% {
-    transform: scale(1.012);
-    box-shadow: 0 14px 38px 0 rgba(108, 99, 255, 0.28), 0 4px 14px 0 rgba(0, 0, 0, 0.05);
-    border-color: rgba(108, 99, 255, 0.95);
+    transform: scale(1.008);
+    box-shadow: 0 8px 24px 0 rgba(108, 99, 255, 0.16);
+    border-color: rgba(108, 99, 255, 0.8);
   }
 }
 
 .animate-breathe {
-  animation: breathe 3.6s ease-in-out infinite;
-}
-
-/* Shimmer Light-Sweep animation for Parse button */
-@keyframes shimmer {
-  0% {
-    transform: translateX(-150%) skewX(-20deg);
-  }
-  100% {
-    transform: translateX(250%) skewX(-20deg);
-  }
-}
-
-.shimmer-btn {
-  position: relative;
-  overflow: hidden;
-}
-
-.shimmer-btn::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    60deg,
-    transparent 20%,
-    rgba(255, 255, 255, 0.35) 45%,
-    rgba(255, 255, 255, 0.65) 50%,
-    rgba(255, 255, 255, 0.35) 55%,
-    transparent 80%
-  );
-  animation: shimmer 2.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
-  pointer-events: none;
-}
-
-/* Parse Ready Pulse & Shimmer when file is attached */
-@keyframes parseAttention {
-  0%, 100% {
-    transform: scale(1.02);
-    box-shadow: 0 0 0 0 rgba(108, 99, 255, 0.55), 0 8px 24px rgba(108, 99, 255, 0.35);
-  }
-  50% {
-    transform: scale(1.07);
-    box-shadow: 0 0 0 8px rgba(108, 99, 255, 0), 0 14px 32px rgba(108, 99, 255, 0.55);
-  }
-}
-
-.animate-parse-ready {
-  animation: parseAttention 1.4s ease-in-out infinite;
-}
-
-/* Rotating Button Border and Rotating Icons */
-@keyframes spinConic {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes spinReverse {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(-360deg);
-  }
-}
-
-.animate-spin-conic {
-  animation: spinConic 2.5s linear infinite;
-}
-
-.animate-spin-reverse {
-  animation: spinReverse 2.5s linear infinite;
-}
-
-.rotating-btn-wrapper {
-  position: relative;
-  border-radius: 0.875rem;
-  padding: 2.5px;
-  overflow: hidden;
-  display: inline-flex;
-}
-
-.rotating-btn-border {
-  position: absolute;
-  top: -150%;
-  left: -150%;
-  width: 400%;
-  height: 400%;
-  background: conic-gradient(
-    from 0deg,
-    #f39c12,
-    #6c63ff,
-    #00c853,
-    #ff3d71,
-    #f39c12
-  );
-  animation: spinConic 2.4s linear infinite;
-  z-index: 0;
-}
-
-.rotating-btn-inner {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  border-radius: calc(0.875rem - 2.5px);
-  background: var(--accent);
+  animation: breathe 4s ease-in-out infinite;
 }
 
 /* AdSense Slot Sizing */

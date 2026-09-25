@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sun, Moon, Zap, RotateCcw, Menu, X, User, Mail, Shield } from 'lucide-react';
+import { Sun, Moon, Zap, RotateCcw, Menu, X } from 'lucide-react';
 
 interface HeaderProps {
   currentTheme: 'light' | 'dark';
@@ -47,59 +47,56 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Center Lomma-Style Capsule Navigation Pill Links */}
-        <nav className="hidden md:flex items-center gap-1.5 bg-[var(--input-inner-bg)]/50 border border-[var(--border-subtle)] p-1 rounded-full text-xs font-bold text-[var(--text-muted)]">
+        <nav className="hidden md:flex items-center gap-1 bg-[var(--input-inner-bg)]/60 border border-[var(--border-subtle)] p-1 rounded-full text-xs font-semibold text-[var(--text-muted)]">
           <button
             onClick={() => handleNav('home')}
             className={`px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${
               currentPage === 'home'
-                ? 'bg-[var(--bg-card)] text-[var(--accent)] shadow-xs'
-                : 'hover:bg-[var(--bg-card)] hover:text-[var(--accent)]'
+                ? 'bg-[var(--bg-card)] text-[var(--text-primary)] font-bold shadow-xs'
+                : 'hover:text-[var(--text-primary)]'
             }`}
           >
             Home
           </button>
           <button
             onClick={() => handleNav('about')}
-            className={`px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+            className={`px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${
               currentPage === 'about'
-                ? 'bg-[var(--bg-card)] text-[var(--accent)] shadow-xs'
-                : 'hover:bg-[var(--bg-card)] hover:text-[var(--accent)]'
+                ? 'bg-[var(--bg-card)] text-[var(--text-primary)] font-bold shadow-xs'
+                : 'hover:text-[var(--text-primary)]'
             }`}
           >
-            <User className="w-3.5 h-3.5 text-[var(--accent)]" />
-            <span>About Us</span>
+            About
           </button>
           <button
             onClick={() => handleNav('privacy')}
-            className={`px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+            className={`px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${
               currentPage === 'privacy'
-                ? 'bg-[var(--bg-card)] text-[var(--accent)] shadow-xs'
-                : 'hover:bg-[var(--bg-card)] hover:text-[var(--accent)]'
+                ? 'bg-[var(--bg-card)] text-[var(--text-primary)] font-bold shadow-xs'
+                : 'hover:text-[var(--text-primary)]'
             }`}
           >
-            <Shield className="w-3.5 h-3.5 text-[var(--accent)]" />
-            <span>Privacy</span>
+            Privacy
           </button>
           <button
             onClick={() => handleNav('terms')}
             className={`px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${
               currentPage === 'terms'
-                ? 'bg-[var(--bg-card)] text-[var(--accent)] shadow-xs'
-                : 'hover:bg-[var(--bg-card)] hover:text-[var(--accent)]'
+                ? 'bg-[var(--bg-card)] text-[var(--text-primary)] font-bold shadow-xs'
+                : 'hover:text-[var(--text-primary)]'
             }`}
           >
             Terms
           </button>
           <button
             onClick={() => handleNav('contact')}
-            className={`px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+            className={`px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${
               currentPage === 'contact'
-                ? 'bg-[var(--bg-card)] text-[var(--accent)] shadow-xs'
-                : 'hover:bg-[var(--bg-card)] hover:text-[var(--accent)]'
+                ? 'bg-[var(--bg-card)] text-[var(--text-primary)] font-bold shadow-xs'
+                : 'hover:text-[var(--text-primary)]'
             }`}
           >
-            <Mail className="w-3.5 h-3.5 text-[var(--accent)]" />
-            <span>Contact</span>
+            Contact
           </button>
         </nav>
 
@@ -145,39 +142,46 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="md:hidden max-w-5xl mx-auto mt-2 p-3 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-xl space-y-1 text-xs font-bold text-[var(--text-muted)] animate-slide-up">
+        <div className="md:hidden max-w-5xl mx-auto mt-2 p-2 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-xl space-y-1 text-xs font-semibold text-[var(--text-muted)] animate-slide-up">
           <button
             onClick={() => handleNav('home')}
-            className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-[var(--input-inner-bg)] flex items-center gap-2.5 transition-colors"
+            className={`w-full text-left px-4 py-2.5 rounded-xl transition-colors cursor-pointer ${
+              currentPage === 'home' ? 'bg-[var(--input-inner-bg)] text-[var(--text-primary)] font-bold' : 'hover:bg-[var(--input-inner-bg)] hover:text-[var(--text-primary)]'
+            }`}
           >
-            <span>Home</span>
+            Home
           </button>
           <button
             onClick={() => handleNav('about')}
-            className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-[var(--input-inner-bg)] flex items-center gap-2.5 transition-colors"
+            className={`w-full text-left px-4 py-2.5 rounded-xl transition-colors cursor-pointer ${
+              currentPage === 'about' ? 'bg-[var(--input-inner-bg)] text-[var(--text-primary)] font-bold' : 'hover:bg-[var(--input-inner-bg)] hover:text-[var(--text-primary)]'
+            }`}
           >
-            <User className="w-4 h-4 text-[var(--accent)]" />
-            <span>About Us</span>
+            About Us
           </button>
           <button
             onClick={() => handleNav('privacy')}
-            className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-[var(--input-inner-bg)] flex items-center gap-2.5 transition-colors"
+            className={`w-full text-left px-4 py-2.5 rounded-xl transition-colors cursor-pointer ${
+              currentPage === 'privacy' ? 'bg-[var(--input-inner-bg)] text-[var(--text-primary)] font-bold' : 'hover:bg-[var(--input-inner-bg)] hover:text-[var(--text-primary)]'
+            }`}
           >
-            <Shield className="w-4 h-4 text-[var(--accent)]" />
-            <span>Privacy Policy</span>
+            Privacy Policy
           </button>
           <button
             onClick={() => handleNav('terms')}
-            className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-[var(--input-inner-bg)] flex items-center gap-2.5 transition-colors"
+            className={`w-full text-left px-4 py-2.5 rounded-xl transition-colors cursor-pointer ${
+              currentPage === 'terms' ? 'bg-[var(--input-inner-bg)] text-[var(--text-primary)] font-bold' : 'hover:bg-[var(--input-inner-bg)] hover:text-[var(--text-primary)]'
+            }`}
           >
-            <span>Terms & Conditions</span>
+            Terms & Conditions
           </button>
           <button
             onClick={() => handleNav('contact')}
-            className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-[var(--input-inner-bg)] flex items-center gap-2.5 transition-colors"
+            className={`w-full text-left px-4 py-2.5 rounded-xl transition-colors cursor-pointer ${
+              currentPage === 'contact' ? 'bg-[var(--input-inner-bg)] text-[var(--text-primary)] font-bold' : 'hover:bg-[var(--input-inner-bg)] hover:text-[var(--text-primary)]'
+            }`}
           >
-            <Mail className="w-4 h-4 text-[var(--accent)]" />
-            <span>Contact Us</span>
+            Contact Us
           </button>
         </div>
       )}
