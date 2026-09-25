@@ -439,8 +439,26 @@ export const RightPane: React.FC<RightPaneProps> = ({
           )}
         </div>
 
-        {/* Processed Thumbnail / Preview */}
-        {processingMetadata?.processedUrl && (
+        {/* Processed Thumbnail / Preview / Loading State */}
+        {isProcessing ? (
+          <div className="w-full h-48 rounded-xl border border-[var(--border)] bg-[var(--bg-primary)]/70 flex flex-col items-center justify-center gap-3 overflow-hidden relative animate-fadeIn">
+            <div className="w-14 h-14 rounded-full overflow-hidden shadow-2xl border-2 border-[var(--accent)] bg-black flex items-center justify-center p-1 animate-logo-spin">
+              <img
+                src="/logo.png"
+                alt="Processing File..."
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="text-center space-y-0.5">
+              <p className="text-xs font-bold text-[var(--text-primary)] animate-pulse">
+                Optimizing & Resampling Document...
+              </p>
+              <p className="text-[11px] text-[var(--text-muted)] font-mono">
+                Applying target constraints in browser RAM
+              </p>
+            </div>
+          </div>
+        ) : processingMetadata?.processedUrl ? (
           <div className="w-full h-48 rounded-xl border border-[var(--border)] bg-[var(--bg-primary)]/40 flex items-center justify-center overflow-hidden relative">
             <img
               src={processingMetadata.processedUrl}
@@ -448,7 +466,7 @@ export const RightPane: React.FC<RightPaneProps> = ({
               className="max-h-full max-w-full object-contain"
             />
           </div>
-        )}
+        ) : null}
 
         {/* File Size Intelligence Progress & Limits */}
         <FileSizeIntelligence
