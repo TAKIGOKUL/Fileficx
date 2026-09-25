@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, Mail, Github, Linkedin, Instagram, MessageCircle, Send, ShieldCheck, Zap, Layers, HardDrive } from 'lucide-react';
+import { ArrowLeft, Github, Linkedin, Instagram, Send, ShieldCheck, Zap, Layers, HardDrive } from 'lucide-react';
 
 interface AboutPageProps {
   onNavigate: (page: string) => void;
@@ -126,20 +126,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
       {/* Connect & Creator Channels */}
       <div className="space-y-3 pt-4 border-t border-[var(--border-subtle)]">
         <h3 className="text-sm font-bold text-[var(--text-primary)]">Connect with the Creator</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          <a
-            href="https://api.whatsapp.com/send?phone=918129725007&text="
-            target="_blank"
-            rel="noreferrer"
-            className="p-3.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--accent)] transition-colors flex items-center gap-3"
-          >
-            <MessageCircle className="w-4 h-4 text-[var(--accent)] shrink-0" />
-            <div>
-              <div className="font-semibold text-xs text-[var(--text-primary)]">WhatsApp</div>
-              <div className="text-[11px] text-[var(--text-muted)]">+91 8129725007</div>
-            </div>
-          </a>
-
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <a
             href="https://t.me/alchemist_taki"
             target="_blank"
@@ -189,19 +176,6 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
             <div>
               <div className="font-semibold text-xs text-[var(--text-primary)]">Instagram</div>
               <div className="text-[11px] text-[var(--text-muted)]">@ad.astra.___</div>
-            </div>
-          </a>
-
-          <a
-            href="mailto:gokul23gopakumar@gmail.com"
-            target="_blank"
-            rel="noreferrer"
-            className="p-3.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--accent)] transition-colors flex items-center gap-3"
-          >
-            <Mail className="w-4 h-4 text-[var(--accent)] shrink-0" />
-            <div>
-              <div className="font-semibold text-xs text-[var(--text-primary)]">Email</div>
-              <div className="text-[11px] text-[var(--text-muted)]">gokul23gopakumar@gmail.com</div>
             </div>
           </a>
         </div>

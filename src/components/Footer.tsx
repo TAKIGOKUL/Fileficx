@@ -1,5 +1,5 @@
 import React from 'react';
-import { Code2, Github, Linkedin, Instagram, MessageCircle, Send, Mail, Phone } from 'lucide-react';
+import { Code2, Github, Linkedin, Instagram, Send } from 'lucide-react';
 
 interface FooterProps {
   onNavigate?: (page: string) => void;
@@ -165,24 +165,14 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate = () => {} }) => {
           {/* Social Icons */}
           <div className="flex flex-wrap items-center gap-2 text-[var(--text-muted)]">
             <a
-              href="https://api.whatsapp.com/send?phone=918129725007&text="
+              href="https://t.me/alchemist_taki"
               target="_blank"
               rel="noreferrer"
               className="p-1.5 rounded-full hover:text-[var(--text-primary)] hover:bg-[var(--input-inner-bg)] transition-colors"
-              aria-label="WhatsApp"
-              title="WhatsApp"
+              aria-label="Telegram"
+              title="Telegram"
             >
-              <MessageCircle className="w-4 h-4" />
-            </a>
-            <a
-              href="https://www.instagram.com/ad.astra.___/"
-              target="_blank"
-              rel="noreferrer"
-              className="p-1.5 rounded-full hover:text-[var(--text-primary)] hover:bg-[var(--input-inner-bg)] transition-colors"
-              aria-label="Instagram"
-              title="Instagram"
-            >
-              <Instagram className="w-4 h-4" />
+              <Send className="w-4 h-4" />
             </a>
             <a
               href="https://github.com/TAKIGOKUL"
@@ -205,34 +195,14 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate = () => {} }) => {
               <Linkedin className="w-4 h-4" />
             </a>
             <a
-              href="https://t.me/alchemist_taki"
+              href="https://www.instagram.com/ad.astra.___/"
               target="_blank"
               rel="noreferrer"
               className="p-1.5 rounded-full hover:text-[var(--text-primary)] hover:bg-[var(--input-inner-bg)] transition-colors"
-              aria-label="Telegram"
-              title="Telegram"
+              aria-label="Instagram"
+              title="Instagram"
             >
-              <Send className="w-4 h-4" />
-            </a>
-            <a
-              href="mailto:gokul23gopakumar@gmail.com"
-              target="_blank"
-              rel="noreferrer"
-              className="p-1.5 rounded-full hover:text-[var(--text-primary)] hover:bg-[var(--input-inner-bg)] transition-colors"
-              aria-label="Email"
-              title="Email"
-            >
-              <Mail className="w-4 h-4" />
-            </a>
-            <a
-              href="tel:8129725007"
-              target="_blank"
-              rel="noreferrer"
-              className="p-1.5 rounded-full hover:text-[var(--text-primary)] hover:bg-[var(--input-inner-bg)] transition-colors"
-              aria-label="Phone"
-              title="Phone"
-            >
-              <Phone className="w-4 h-4" />
+              <Instagram className="w-4 h-4" />
             </a>
           </div>
         </div>

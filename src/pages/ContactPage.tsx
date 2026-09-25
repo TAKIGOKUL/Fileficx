@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Mail, Send, CheckCircle2, Github, Linkedin, Instagram, MessageCircle, Phone } from 'lucide-react';
+import { ArrowLeft, Send, CheckCircle2, Github, Linkedin, Instagram } from 'lucide-react';
 
 interface ContactPageProps {
   onNavigate: (page: string) => void;
@@ -60,7 +60,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigate }) => {
               <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto" />
               <h3 className="font-bold text-base text-[var(--text-primary)]">Message Received</h3>
               <p className="text-xs text-[var(--text-muted)] font-normal max-w-sm mx-auto">
-                Thank you for reaching out. We will review your inquiry and respond to your email shortly.
+                Thank you for reaching out. We will review your inquiry and get back to you shortly.
               </p>
             </div>
           ) : (
@@ -137,53 +137,8 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigate }) => {
           )}
         </div>
 
-        {/* Right 1 Col: Direct Contact Cards */}
+        {/* Right 1 Col: Direct Social Channels */}
         <div className="space-y-3">
-          <a
-            href="https://api.whatsapp.com/send?phone=918129725007&text="
-            target="_blank"
-            rel="noreferrer"
-            className="p-3.5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--accent)] space-y-1 block transition-colors"
-          >
-            <div className="w-7 h-7 rounded-lg bg-[var(--accent-subtle)] text-[var(--accent)] flex items-center justify-center font-bold mb-1.5">
-              <MessageCircle className="w-4 h-4" />
-            </div>
-            <h3 className="font-semibold text-xs text-[var(--text-primary)]">WhatsApp</h3>
-            <p className="text-[11px] text-[var(--text-muted)] font-normal">
-              +91 8129725007
-            </p>
-          </a>
-
-          <a
-            href="mailto:gokul23gopakumar@gmail.com"
-            target="_blank"
-            rel="noreferrer"
-            className="p-3.5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--accent)] space-y-1 block transition-colors"
-          >
-            <div className="w-7 h-7 rounded-lg bg-[var(--accent-subtle)] text-[var(--accent)] flex items-center justify-center font-bold mb-1.5">
-              <Mail className="w-4 h-4" />
-            </div>
-            <h3 className="font-semibold text-xs text-[var(--text-primary)]">Direct Email</h3>
-            <p className="text-[11px] text-[var(--text-muted)] font-normal break-all">
-              gokul23gopakumar@gmail.com
-            </p>
-          </a>
-
-          <a
-            href="tel:8129725007"
-            target="_blank"
-            rel="noreferrer"
-            className="p-3.5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--accent)] space-y-1 block transition-colors"
-          >
-            <div className="w-7 h-7 rounded-lg bg-[var(--accent-subtle)] text-[var(--accent)] flex items-center justify-center font-bold mb-1.5">
-              <Phone className="w-4 h-4" />
-            </div>
-            <h3 className="font-semibold text-xs text-[var(--text-primary)]">Phone</h3>
-            <p className="text-[11px] text-[var(--text-muted)] font-normal">
-              +91 8129725007
-            </p>
-          </a>
-
           <a
             href="https://t.me/alchemist_taki"
             target="_blank"
