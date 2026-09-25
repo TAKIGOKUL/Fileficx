@@ -71,7 +71,7 @@ export const Footer: React.FC = () => {
               </div>
               <h4 className="font-extrabold text-sm text-[var(--text-primary)]">Smart Flow</h4>
               <p className="text-[11px] text-[var(--text-muted)] leading-relaxed font-medium">
-                Manage your money and document specs with ease and clarity. Every transaction, balance, pixel ratio, and target KB limit stays organized in one place—so you can focus on what matters most.
+                Manage your document specs with ease and clarity. Every dimension ratio, DPI requirement, and target KB limit stays organized in one place.
               </p>
             </div>
 
@@ -82,7 +82,7 @@ export const Footer: React.FC = () => {
               </div>
               <h4 className="font-extrabold text-sm text-[var(--text-primary)]">Open Path</h4>
               <p className="text-[11px] text-[var(--text-muted)] leading-relaxed font-medium">
-                Step into borderless application processing with freedom and confidence. From payments to reports, everything adapts to the way you work, without limitations or server uploads.
+                Step into borderless application processing with freedom and confidence. Everything adapts to the exact portal limits you specify, without server uploads.
               </p>
             </div>
 
@@ -93,7 +93,7 @@ export const Footer: React.FC = () => {
               </div>
               <h4 className="font-extrabold text-sm text-[var(--text-primary)]">True Sync</h4>
               <p className="text-[11px] text-[var(--text-muted)] leading-relaxed font-medium">
-                Always stay updated with real-time insights. Whether it's dimensions, file size reduction, or upcoming payouts, you'll never lose track of your financial and document picture.
+                Always stay updated with real-time insights. Whether it's resolution, file size reduction, or color mode conversion, you'll never lose track.
               </p>
             </div>
 
@@ -104,7 +104,7 @@ export const Footer: React.FC = () => {
               </div>
               <h4 className="font-extrabold text-sm text-[var(--text-primary)]">Easy Lift</h4>
               <p className="text-[11px] text-[var(--text-muted)] leading-relaxed font-medium">
-                Lighten the weight of managing files and tasks. Automations, smart tracking, and simple WebAssembly tools help you save time while staying in control, every single day.
+                Lighten the weight of managing files and tasks. In-browser WebAssembly algorithms help you save time while staying in control, every single day.
               </p>
             </div>
 
@@ -131,7 +131,7 @@ export const Footer: React.FC = () => {
             <div className="flex flex-wrap items-center gap-2 pt-1 text-[11px]">
               <button
                 onClick={() => setModalType('contact')}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] hover:border-[var(--accent)] text-[var(--text-primary)] font-semibold transition-all cursor-pointer hover:scale-[1.02] active:scale-95"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[var(--bg-primary)] border border-[var(--border-subtle)] hover:border-[var(--accent)] text-[var(--text-primary)] font-semibold transition-all cursor-pointer hover:scale-[1.02] active:scale-95"
               >
                 <Mail className="w-3.5 h-3.5 text-[var(--accent)]" />
                 <span>Contact Support</span>
@@ -141,7 +141,7 @@ export const Footer: React.FC = () => {
                 href="https://github.com/TAKIGOKUL/Fileficx.git"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] hover:border-[var(--accent)] text-[var(--text-primary)] font-semibold transition-all hover:scale-[1.02] active:scale-95"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[var(--bg-primary)] border border-[var(--border-subtle)] hover:border-[var(--accent)] text-[var(--text-primary)] font-semibold transition-all hover:scale-[1.02] active:scale-95"
               >
                 <Github className="w-3.5 h-3.5 text-[var(--accent)]" />
                 <span>GitHub</span>
@@ -152,7 +152,7 @@ export const Footer: React.FC = () => {
                 href="https://x.com"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] hover:border-[var(--accent)] text-[var(--text-primary)] font-semibold transition-all hover:scale-[1.02] active:scale-95"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[var(--bg-primary)] border border-[var(--border-subtle)] hover:border-[var(--accent)] text-[var(--text-primary)] font-semibold transition-all hover:scale-[1.02] active:scale-95"
               >
                 <Twitter className="w-3.5 h-3.5 text-[var(--accent)]" />
                 <span>Twitter / X</span>
@@ -240,332 +240,318 @@ export const Footer: React.FC = () => {
 
       </div>
 
-      {/* Modern High-Trust Modals */}
+      {/* Lomma-Inspired Glassmorphic Dialog Modals */}
       {modalType && (
-        <div className="fixed inset-0 z-50 bg-black/65 backdrop-blur-md flex items-center justify-center p-4 animate-slide-up">
-          <div className="bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 sm:p-8 relative shadow-2xl text-left">
+        <div 
+          className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xl flex items-center justify-center p-3 sm:p-6 animate-slide-up"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setModalType(null);
+          }}
+        >
+          <div className="relative w-full max-w-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-[2rem] shadow-[0_25px_70px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col max-h-[88vh] text-left">
             
-            {/* Close Button */}
-            <button
-              onClick={() => setModalType(null)}
-              className="absolute top-5 right-5 text-gray-400 hover:text-[var(--text-primary)] p-2 rounded-full bg-[var(--bg-primary)] border border-[var(--border-subtle)] cursor-pointer transition-all hover:scale-105 active:scale-95"
-            >
-              <X className="w-4 h-4" />
-            </button>
-
-            {/* Modal 1: About Us & Creator Story */}
-            {modalType === 'about' && (
-              <div className="space-y-5 text-xs text-[var(--text-primary)]">
-                <div className="flex items-center gap-3.5 border-b border-[var(--border-subtle)] pb-4">
-                  <div className="w-12 h-12 rounded-2xl bg-[var(--accent)] text-white flex items-center justify-center text-xl font-black shadow-lg shadow-[var(--accent)]/30">
-                    FF
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-black text-[var(--text-primary)]">About Us — Fileficx</h3>
-                    <p className="text-xs text-[var(--accent)] font-bold">
-                      Empowering applicants and creators worldwide with instant, zero-server visual & document optimization.
-                    </p>
-                  </div>
+            {/* Modal Top Header Bar */}
+            <div className="px-6 sm:px-8 py-5 border-b border-[var(--border-subtle)] bg-[var(--input-inner-bg)]/40 flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-[var(--accent)] flex items-center justify-center text-white shadow-md shadow-[var(--accent)]/30">
+                  {modalType === 'about' && <User className="w-4 h-4" />}
+                  {modalType === 'contact' && <Mail className="w-4 h-4" />}
+                  {modalType === 'privacy' && <Shield className="w-4 h-4" />}
+                  {modalType === 'terms' && <FileText className="w-4 h-4" />}
                 </div>
-
-                <div className="p-4 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-3 leading-relaxed">
-                  <h4 className="font-extrabold text-sm text-[var(--text-primary)]">Our Mission & Creator Story</h4>
-                  <p>
-                    Hi! I'm an AI enthusiast and creative technologist passionate about making digital tools, document optimization, and creative utilities accessible to everyone. Fileficx was born from the idea that frustrating rejection errors (such as <i>"File size exceeded"</i>, <i>"Invalid W×H pixel dimensions"</i>, or <i>"DPI resolution mismatch"</i>) on government and corporate recruitment portals shouldn't gatekeep applicants.
-                  </p>
-                  <p>
-                    Unlike traditional file conversion sites that upload your sensitive biometrics, passport photos, and certificates to remote servers, Fileficx runs 100% locally inside your browser's RAM using WebAssembly and HTML5 Canvas. Your documents never touch any server.
-                  </p>
-                </div>
-
-                {/* Lomma Stats Section: Numbers That Speak for Themselves */}
-                <div className="space-y-3 pt-1">
-                  <div className="space-y-1">
-                    <h4 className="font-extrabold text-sm text-[var(--text-primary)]">
-                      Numbers That Speak for Themselves
-                    </h4>
-                    <p className="text-xs text-[var(--text-muted)] font-medium">
-                      Fileficx is growing fast — trusted by users around the world to move and manage their files with confidence.
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1 text-left">
-                    <div className="p-3.5 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-                      <div className="text-xl font-black text-[var(--accent)]">75K+</div>
-                      <div className="text-[10px] text-[var(--text-muted)] font-medium leading-snug">
-                        Active users managing their document specs through Fileficx.
-                      </div>
-                    </div>
-
-                    <div className="p-3.5 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-                      <div className="text-xl font-black text-[var(--accent)]">$2.5B+</div>
-                      <div className="text-[10px] text-[var(--text-muted)] font-medium leading-snug">
-                        Processed in global document optimizations every year.
-                      </div>
-                    </div>
-
-                    <div className="p-3.5 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-                      <div className="text-xl font-black text-[var(--accent)]">190+</div>
-                      <div className="text-[10px] text-[var(--text-muted)] font-medium leading-snug">
-                        Supported portal specs for uploading and formatting files.
-                      </div>
-                    </div>
-
-                    <div className="p-3.5 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-1">
-                      <div className="text-xl font-black text-[var(--accent)]">40+</div>
-                      <div className="text-[10px] text-[var(--text-muted)] font-medium leading-snug">
-                        Preset dimension & DPI rules for multi-portal engines.
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
-                  <button
-                    onClick={() => setModalType('contact')}
-                    className="p-3.5 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center gap-3 hover:border-[var(--accent)] transition-all text-left cursor-pointer hover:scale-[1.02]"
-                  >
-                    <Mail className="w-4 h-4 text-[var(--accent)] shrink-0" />
-                    <div>
-                      <div className="font-bold text-[11px]">Contact Support</div>
-                      <div className="text-[9px] text-[var(--text-muted)] font-medium">Direct Feedback</div>
-                    </div>
-                  </button>
-
-                  <a
-                    href="https://github.com/TAKIGOKUL/Fileficx.git"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="p-3.5 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center gap-3 hover:border-[var(--accent)] transition-all hover:scale-[1.02]"
-                  >
-                    <Github className="w-4 h-4 text-[var(--accent)] shrink-0" />
-                    <div>
-                      <div className="font-bold text-[11px]">GitHub</div>
-                      <div className="text-[9px] text-[var(--text-muted)] font-medium">Source Code</div>
-                    </div>
-                  </a>
-
-                  <a
-                    href="https://x.com"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="p-3.5 rounded-2xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center gap-3 hover:border-[var(--accent)] transition-all hover:scale-[1.02]"
-                  >
-                    <Twitter className="w-4 h-4 text-[var(--accent)] shrink-0" />
-                    <div>
-                      <div className="font-bold text-[11px]">Twitter / X</div>
-                      <div className="text-[9px] text-[var(--text-muted)] font-medium">Community</div>
-                    </div>
-                  </a>
-                </div>
-              </div>
-            )}
-
-            {/* Modal 2: Interactive Contact Us Form */}
-            {modalType === 'contact' && (
-              <div className="space-y-5 text-xs text-[var(--text-primary)]">
-                <div className="border-b border-[var(--border-subtle)] pb-3">
-                  <h3 className="text-lg font-black text-[var(--accent)]">Contact Us & Support</h3>
-                  <p className="text-[11px] text-[var(--text-muted)] font-medium">
-                    Have questions, portal feedback, or inquiries? Send a direct message below.
-                  </p>
-                </div>
-
-                {contactSubmitted ? (
-                  <div className="p-8 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-center space-y-2 animate-slide-up">
-                    <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto" />
-                    <h4 className="font-extrabold text-sm text-[var(--text-primary)]">Message Sent Successfully!</h4>
-                    <p className="text-xs text-[var(--text-muted)]">
-                      Thank you for contacting Fileficx. We will review your query and respond shortly.
-                    </p>
-                  </div>
-                ) : (
-                  <form onSubmit={handleContactSubmit} className="space-y-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                      <div>
-                        <label className="block text-[11px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider mb-1">Your Name</label>
-                        <input
-                          type="text"
-                          required
-                          value={contactName}
-                          onChange={(e) => setContactName(e.target.value)}
-                          placeholder="e.g. Alex Sharma"
-                          className="w-full bg-[var(--input-inner-bg)] border border-[var(--border-subtle)] rounded-xl p-3 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] font-medium"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-[11px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider mb-1">Your Email</label>
-                        <input
-                          type="email"
-                          required
-                          value={contactEmail}
-                          onChange={(e) => setContactEmail(e.target.value)}
-                          placeholder="name@example.com"
-                          className="w-full bg-[var(--input-inner-bg)] border border-[var(--border-subtle)] rounded-xl p-3 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] font-medium"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-[11px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider mb-1">Subject</label>
-                      <select
-                        value={contactSubject}
-                        onChange={(e) => setContactSubject(e.target.value)}
-                        className="w-full bg-[var(--input-inner-bg)] border border-[var(--border-subtle)] rounded-xl p-3 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] font-medium"
-                      >
-                        <option>General Query / Feedback</option>
-                        <option>Portal Requirements Support</option>
-                        <option>Privacy & Security Inquiry</option>
-                        <option>Advertising / Business Partnership</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-[11px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider mb-1">Message</label>
-                      <textarea
-                        rows={4}
-                        required
-                        value={contactMessage}
-                        onChange={(e) => setContactMessage(e.target.value)}
-                        placeholder="How can we help you?"
-                        className="w-full bg-[var(--input-inner-bg)] border border-[var(--border-subtle)] rounded-xl p-3 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] font-medium resize-none leading-relaxed"
-                      />
-                    </div>
-
-                    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-                      <div className="text-[11px] text-[var(--text-muted)] font-medium">
-                        Direct Email: <strong className="text-[var(--text-primary)]">gokulgkblueheart@gmail.com</strong>
-                      </div>
-                      <button
-                        type="submit"
-                        className="btn btn-primary text-xs py-2.5 px-6 rounded-xl font-bold flex items-center gap-2 w-full sm:w-auto justify-center"
-                      >
-                        <Send className="w-3.5 h-3.5" />
-                        <span>Send Message</span>
-                      </button>
-                    </div>
-                  </form>
-                )}
-              </div>
-            )}
-
-            {/* Modal 3: Full Privacy Policy */}
-            {modalType === 'privacy' && (
-              <div className="space-y-4 text-xs text-[var(--text-primary)] leading-relaxed">
-                <div className="border-b border-[var(--border-subtle)] pb-3">
-                  <h3 className="text-lg font-black text-[var(--accent)]">Privacy Policy</h3>
-                  <div className="text-[10px] text-[var(--text-muted)] font-medium">Last updated: 25/09/2026</div>
-                </div>
-
-                <div className="space-y-2">
-                  <h4 className="font-extrabold text-sm">Information We Collect</h4>
-                  <p>
-                    We collect information you provide directly to us, such as when you set preferences or interact with our services. This may include your email address, preferences, and any content you choose to share. <strong>Note: Your uploaded documents, photos, and signatures are processed exclusively in your browser's local RAM and are NEVER uploaded to any server.</strong>
-                  </p>
-                </div>
-
-                <div className="space-y-2">
-                  <h4 className="font-extrabold text-sm">How We Use Your Information</h4>
-                  <ul className="list-disc pl-5 space-y-1 font-medium">
-                    <li>To provide, maintain, and improve our client-side processing services</li>
-                    <li>To personalize your experience on our platform</li>
-                    <li>To communicate with you about our services</li>
-                    <li>To ensure the security and integrity of our platform</li>
-                  </ul>
-                </div>
-
-                <div className="space-y-2">
-                  <h4 className="font-extrabold text-sm">Google AdSense and Third-Party Advertising</h4>
-                  <p>
-                    We use Google AdSense (Publisher ID: <code>ca-pub-2244853446692512</code>) to display advertisements on our website. Google AdSense and other third-party advertising partners may place cookies on your browser, use web beacons, or collect your IP address to serve personalized advertisements based on your interests and browsing behavior.
-                  </p>
-                  <p>
-                    These third parties may be placing and reading cookies on your users' browsers, or using web beacons or IP addresses to collect information in the process of ad serving on our website. For more information, please visit <a href="https://www.google.com/policies/privacy/partners/" target="_blank" rel="noreferrer" className="text-[var(--accent)] underline font-bold">How Google uses data when you use our partners' sites or apps</a>. You may opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noreferrer" className="text-[var(--accent)] underline font-bold">Google Ads Settings</a>.
-                  </p>
-                </div>
-
-                <div className="space-y-2">
-                  <h4 className="font-extrabold text-sm">Cookies and Tracking</h4>
-                  <p>
-                    We use cookies and similar tracking technologies to track activity on our service and hold certain information. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent.
-                  </p>
-                </div>
-
-                <div className="space-y-2">
-                  <h4 className="font-extrabold text-sm">EU User Consent and GDPR (EEA, UK & Swiss TCF v2.2)</h4>
-                  <p>
-                    For users in the European Union, European Economic Area (EEA), UK, and Switzerland, we comply with the General Data Protection Regulation (GDPR) and obtain appropriate consent for data processing and personalized advertising using a Google Certified Consent Management Platform (CMP). You have the right to access, update, or delete your personal information, and to withdraw consent for data processing at any time.
-                  </p>
-                </div>
-
-                <div className="pt-2">
-                  <button
-                    onClick={openConsentPreferences}
-                    className="btn btn-secondary text-xs py-2 px-4 rounded-xl font-bold"
-                  >
-                    Open Cookie Consent Management (CMP)
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Modal 4: Full Terms & Conditions */}
-            {modalType === 'terms' && (
-              <div className="space-y-4 text-xs text-[var(--text-primary)] leading-relaxed">
-                <div className="border-b border-[var(--border-subtle)] pb-3">
-                  <h3 className="text-lg font-black text-[var(--accent)]">Terms and Conditions & Disclaimer</h3>
-                  <div className="text-[10px] text-[var(--text-muted)] font-medium">Last updated: 25/09/2026</div>
-                </div>
-
-                <div className="space-y-2">
-                  <h4 className="font-extrabold text-sm">Acceptance of Terms</h4>
-                  <p>
-                    By accessing and using this website, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
-                  </p>
-                </div>
-
-                <div className="space-y-2">
-                  <h4 className="font-extrabold text-sm">Use License</h4>
-                  <p>
-                    Permission is granted to temporarily use the materials on Fileficx's website for personal, non-commercial transitory viewing and processing only. Under this license you may not:
-                  </p>
-                  <ul className="list-disc pl-5 space-y-1 font-medium">
-                    <li>Modify or copy core engine codebase materials for commercial resale</li>
-                    <li>Attempt to reverse engineer any WebAssembly binary contained on the website</li>
-                    <li>Remove any copyright or proprietary notations</li>
-                  </ul>
-                </div>
-
-                <div className="space-y-2">
-                  <h4 className="font-extrabold text-sm">Advertising and Google AdSense Compliance</h4>
-                  <p>
-                    Our service displays advertisements through Google AdSense (Publisher ID: <code>ca-pub-2244853446692512</code>) and other advertising partners. By using our service, you acknowledge and agree that:
-                  </p>
-                  <ul className="list-disc pl-5 space-y-1 font-medium">
-                    <li>Third parties may place cookies and collect information for advertising purposes</li>
-                    <li>Advertisements are provided by third parties and do not reflect our endorsement</li>
-                    <li>We comply with Google Publisher Policies and industry advertising standards</li>
-                    <li>Users must not engage in click fraud, artificial traffic generation, or any attempts to manipulate advertising systems</li>
-                  </ul>
-                </div>
-
-                <div className="space-y-2">
-                  <h4 className="font-extrabold text-sm">User Responsibilities and Disclaimer</h4>
-                  <p>
-                    The materials on Fileficx's website are provided on an 'as is' basis. Fileficx makes no warranties, expressed or implied, and hereby disclaims all other warranties. Users remain responsible for reviewing official notifications (e.g. SSC, UPSC, IBPS, NTA) to verify latest requirement rules before submitting files.
+                <div>
+                  <h3 className="text-base font-black text-[var(--text-primary)]">
+                    {modalType === 'about' && 'About Us — Fileficx'}
+                    {modalType === 'contact' && 'Contact Support & Feedback'}
+                    {modalType === 'privacy' && 'Privacy Policy & GDPR Compliance'}
+                    {modalType === 'terms' && 'Terms and Conditions & Disclaimer'}
+                  </h3>
+                  <p className="text-[10px] text-[var(--text-muted)] font-semibold">
+                    {modalType === 'about' && 'Our story, values, and platform mission'}
+                    {modalType === 'contact' && 'Direct inquiry form and developer contact'}
+                    {modalType === 'privacy' && 'Certified CMP, zero-server privacy & cookies'}
+                    {modalType === 'terms' && 'Usage rules, license, and legal disclaimer'}
                   </p>
                 </div>
               </div>
-            )}
 
-            <div className="mt-6 pt-4 border-t border-[var(--border-subtle)] text-right">
+              {/* Close Button */}
               <button
                 onClick={() => setModalType(null)}
-                className="btn btn-primary text-xs py-2 px-5 rounded-xl font-bold"
+                className="w-8 h-8 rounded-full bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--accent)] hover:bg-[var(--accent-subtle)] text-[var(--text-muted)] hover:text-[var(--accent)] flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 shadow-xs"
+                aria-label="Close dialog"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Modal Body (Scrollable) */}
+            <div className="p-6 sm:p-8 space-y-5 overflow-y-auto custom-scrollbar flex-1 text-xs text-[var(--text-primary)] leading-relaxed">
+              
+              {/* MODAL 1: ABOUT US */}
+              {modalType === 'about' && (
+                <div className="space-y-5">
+                  <div className="p-5 rounded-2xl bg-[var(--input-inner-bg)]/40 border border-[var(--border-subtle)]/70 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-[var(--accent)] bg-[var(--accent-subtle)] px-2.5 py-0.5 rounded-full">
+                        OUR STORY
+                      </span>
+                    </div>
+                    <h4 className="font-extrabold text-sm text-[var(--text-primary)]">
+                      Empowering applicants worldwide with instant, zero-server document preparation.
+                    </h4>
+                    <p>
+                      Hi! I'm an AI enthusiast and creative technologist passionate about making digital tools, document optimization, and creative utilities accessible to everyone. Fileficx was born from the idea that frustrating rejection errors (such as <i>"File size exceeded"</i>, <i>"Invalid W×H pixel dimensions"</i>, or <i>"DPI resolution mismatch"</i>) on recruitment portals shouldn't gatekeep applicants.
+                    </p>
+                    <p>
+                      Unlike traditional file conversion websites that upload your sensitive biometrics, passport photos, and certificates to remote cloud servers, Fileficx runs 100% locally inside your browser's RAM using WebAssembly and HTML5 Canvas.
+                    </p>
+                  </div>
+
+                  {/* Numbers That Speak for Themselves */}
+                  <div className="space-y-3">
+                    <div className="space-y-0.5">
+                      <h4 className="font-extrabold text-sm text-[var(--text-primary)]">
+                        Numbers That Speak for Themselves
+                      </h4>
+                      <p className="text-[11px] text-[var(--text-muted)] font-medium">
+                        Fileficx is growing fast — trusted by users around the world to process files with confidence.
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                      <div className="p-3.5 rounded-2xl bg-[var(--input-inner-bg)]/50 border border-[var(--border-subtle)]/70 space-y-1">
+                        <div className="text-xl font-black text-[var(--accent)]">75K+</div>
+                        <div className="text-[10px] text-[var(--text-muted)] font-medium leading-tight">
+                          Active users managing their document specs.
+                        </div>
+                      </div>
+
+                      <div className="p-3.5 rounded-2xl bg-[var(--input-inner-bg)]/50 border border-[var(--border-subtle)]/70 space-y-1">
+                        <div className="text-xl font-black text-[var(--accent)]">$2.5B+</div>
+                        <div className="text-[10px] text-[var(--text-muted)] font-medium leading-tight">
+                          Processed in document optimizations annually.
+                        </div>
+                      </div>
+
+                      <div className="p-3.5 rounded-2xl bg-[var(--input-inner-bg)]/50 border border-[var(--border-subtle)]/70 space-y-1">
+                        <div className="text-xl font-black text-[var(--accent)]">190+</div>
+                        <div className="text-[10px] text-[var(--text-muted)] font-medium leading-tight">
+                          Supported recruitment portal specs.
+                        </div>
+                      </div>
+
+                      <div className="p-3.5 rounded-2xl bg-[var(--input-inner-bg)]/50 border border-[var(--border-subtle)]/70 space-y-1">
+                        <div className="text-xl font-black text-[var(--accent)]">40+</div>
+                        <div className="text-[10px] text-[var(--text-muted)] font-medium leading-tight">
+                          Preset dimension & DPI rule engines.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Connect Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+                    <button
+                      onClick={() => setModalType('contact')}
+                      className="p-3 rounded-2xl bg-[var(--input-inner-bg)]/50 border border-[var(--border-subtle)]/70 flex items-center gap-2.5 hover:border-[var(--accent)] transition-all text-left cursor-pointer hover:scale-[1.02]"
+                    >
+                      <Mail className="w-4 h-4 text-[var(--accent)] shrink-0" />
+                      <div>
+                        <div className="font-bold text-[11px]">Send Email</div>
+                        <div className="text-[9px] text-[var(--text-muted)]">Direct Contact</div>
+                      </div>
+                    </button>
+
+                    <a
+                      href="https://github.com/TAKIGOKUL/Fileficx.git"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="p-3 rounded-2xl bg-[var(--input-inner-bg)]/50 border border-[var(--border-subtle)]/70 flex items-center gap-2.5 hover:border-[var(--accent)] transition-all hover:scale-[1.02]"
+                    >
+                      <Github className="w-4 h-4 text-[var(--accent)] shrink-0" />
+                      <div>
+                        <div className="font-bold text-[11px]">GitHub</div>
+                        <div className="text-[9px] text-[var(--text-muted)]">Source Code</div>
+                      </div>
+                    </a>
+
+                    <a
+                      href="https://x.com"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="p-3 rounded-2xl bg-[var(--input-inner-bg)]/50 border border-[var(--border-subtle)]/70 flex items-center gap-2.5 hover:border-[var(--accent)] transition-all hover:scale-[1.02]"
+                    >
+                      <Twitter className="w-4 h-4 text-[var(--accent)] shrink-0" />
+                      <div>
+                        <div className="font-bold text-[11px]">Twitter / X</div>
+                        <div className="text-[9px] text-[var(--text-muted)]">Community</div>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              {/* MODAL 2: CONTACT US */}
+              {modalType === 'contact' && (
+                <div className="space-y-4">
+                  {contactSubmitted ? (
+                    <div className="p-8 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-center space-y-2 animate-slide-up">
+                      <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto" />
+                      <h4 className="font-extrabold text-sm text-[var(--text-primary)]">Message Sent Successfully!</h4>
+                      <p className="text-xs text-[var(--text-muted)]">
+                        Thank you for reaching out to Fileficx. We will review your query and respond shortly.
+                      </p>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleContactSubmit} className="space-y-3.5">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-[11px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider mb-1">Your Name</label>
+                          <input
+                            type="text"
+                            required
+                            value={contactName}
+                            onChange={(e) => setContactName(e.target.value)}
+                            placeholder="e.g. Alex Sharma"
+                            className="w-full bg-[var(--input-inner-bg)] border border-[var(--border-subtle)] rounded-xl p-3 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] font-medium"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[11px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider mb-1">Your Email</label>
+                          <input
+                            type="email"
+                            required
+                            value={contactEmail}
+                            onChange={(e) => setContactEmail(e.target.value)}
+                            placeholder="name@example.com"
+                            className="w-full bg-[var(--input-inner-bg)] border border-[var(--border-subtle)] rounded-xl p-3 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] font-medium"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider mb-1">Subject</label>
+                        <select
+                          value={contactSubject}
+                          onChange={(e) => setContactSubject(e.target.value)}
+                          className="w-full bg-[var(--input-inner-bg)] border border-[var(--border-subtle)] rounded-xl p-3 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] font-medium"
+                        >
+                          <option>General Query / Feedback</option>
+                          <option>Portal Requirements Support</option>
+                          <option>Privacy & Security Inquiry</option>
+                          <option>Advertising / Business Partnership</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider mb-1">Message</label>
+                        <textarea
+                          rows={4}
+                          required
+                          value={contactMessage}
+                          onChange={(e) => setContactMessage(e.target.value)}
+                          placeholder="How can we help you?"
+                          className="w-full bg-[var(--input-inner-bg)] border border-[var(--border-subtle)] rounded-xl p-3 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] font-medium resize-none leading-relaxed"
+                        />
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+                        <div className="text-[11px] text-[var(--text-muted)] font-medium">
+                          Direct Email: <strong className="text-[var(--text-primary)]">gokulgkblueheart@gmail.com</strong>
+                        </div>
+                        <button
+                          type="submit"
+                          className="btn btn-primary text-xs py-2.5 px-6 rounded-full font-bold flex items-center gap-2 w-full sm:w-auto justify-center shadow-md hover:scale-[1.02] active:scale-95 transition-all"
+                        >
+                          <Send className="w-3.5 h-3.5" />
+                          <span>Send Message</span>
+                        </button>
+                      </div>
+                    </form>
+                  )}
+                </div>
+              )}
+
+              {/* MODAL 3: PRIVACY POLICY */}
+              {modalType === 'privacy' && (
+                <div className="space-y-4">
+                  <div className="p-4 rounded-2xl bg-[var(--input-inner-bg)]/40 border border-[var(--border-subtle)]/70 flex items-start gap-3">
+                    <Lock className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-extrabold text-sm text-[var(--text-primary)]">100% In-Browser Privacy Guarantee</h4>
+                      <p className="text-[11px] text-[var(--text-muted)] leading-relaxed mt-1">
+                        Fileficx processes all image compression, dimension resizing, and PDF tasks exclusively inside your device's memory. No document data is ever sent to any remote server.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="space-y-1">
+                      <h4 className="font-extrabold text-sm text-[var(--text-primary)]">Google AdSense and Advertising Cookies</h4>
+                      <p className="text-[11px] text-[var(--text-muted)] leading-relaxed">
+                        We use Google AdSense (Publisher ID: <code>ca-pub-2244853446692512</code>) to serve advertisements. In compliance with European Economic Area (EEA), UK, and Swiss regulations (IAB TCF v2.2), we provide a Google Certified Consent Management Platform (CMP).
+                      </p>
+                    </div>
+
+                    <div className="space-y-1">
+                      <h4 className="font-extrabold text-sm text-[var(--text-primary)]">Rights Under GDPR & CPRA</h4>
+                      <p className="text-[11px] text-[var(--text-muted)] leading-relaxed">
+                        You have full rights to access, restrict, or revoke consent for advertising cookies anytime. You can modify these settings by clicking the Cookie Consent button below.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="pt-2">
+                    <button
+                      onClick={openConsentPreferences}
+                      className="btn btn-secondary text-xs py-2 px-4 rounded-full font-bold flex items-center gap-1.5"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Open Cookie Consent Management (CMP)</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* MODAL 4: TERMS & CONDITIONS */}
+              {modalType === 'terms' && (
+                <div className="space-y-4">
+                  <div className="p-4 rounded-2xl bg-[var(--input-inner-bg)]/40 border border-[var(--border-subtle)]/70 space-y-2">
+                    <h4 className="font-extrabold text-sm text-[var(--text-primary)]">Acceptance of Terms</h4>
+                    <p className="text-[11px] text-[var(--text-muted)] leading-relaxed">
+                      By accessing and using Fileficx, you accept and agree to be bound by these terms. Fileficx is provided as a free public utility for job applicants, students, and creators.
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h4 className="font-extrabold text-sm text-[var(--text-primary)]">Advertising & Platform Compliance</h4>
+                    <p className="text-[11px] text-[var(--text-muted)] leading-relaxed">
+                      We comply with Google Publisher Policies and industry advertising standards. Users must not engage in click fraud, artificial traffic generation, or any attempts to manipulate advertising systems.
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h4 className="font-extrabold text-sm text-[var(--text-primary)]">Disclaimer of Liability</h4>
+                    <p className="text-[11px] text-[var(--text-muted)] leading-relaxed">
+                      Fileficx is provided on an 'as is' basis without warranties. Users remain responsible for reviewing official recruitment and exam notices to verify requirement limits prior to submission.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+            </div>
+
+            {/* Modal Fixed Footer Action Bar */}
+            <div className="px-6 sm:px-8 py-3.5 border-t border-[var(--border-subtle)] bg-[var(--input-inner-bg)]/20 flex items-center justify-end shrink-0">
+              <button
+                onClick={() => setModalType(null)}
+                className="btn btn-primary text-xs py-2 px-6 rounded-full font-bold shadow-sm hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
               >
                 Close
               </button>
             </div>
+
           </div>
         </div>
       )}
