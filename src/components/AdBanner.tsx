@@ -8,7 +8,7 @@ interface AdBannerProps {
   slot?: string;
 }
 
-const DEFAULT_CLIENT = 'ca-pub-0000000000000000';
+const DEFAULT_CLIENT = 'ca-pub-2244853446692512';
 
 const SLOT_MAP = {
   'side-left': '1234567890',
