@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sun, Moon, Zap, RotateCcw, Menu, X, BookOpen, User, Mail, Shield } from 'lucide-react';
+import { Sun, Moon, Zap, RotateCcw, Menu, X, User, Mail, Shield } from 'lucide-react';
 
 interface HeaderProps {
   currentTheme: 'light' | 'dark';
@@ -24,121 +24,110 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="w-full bg-[var(--bg-card)]/95 backdrop-blur-md border-b border-[var(--border-subtle)] px-4 sm:px-8 py-3 transition-colors duration-200 sticky top-0 z-40">
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+    <header className="sticky top-3 z-50 w-full px-4 sm:px-6 transition-all duration-300">
+      <div className="max-w-5xl mx-auto rounded-full bg-[var(--bg-card)]/85 backdrop-blur-xl border border-[var(--border-subtle)] shadow-xl px-5 sm:px-7 py-2.5 flex items-center justify-between gap-4 transition-all duration-300">
         
         {/* Brand Logo */}
-        <div className="flex items-center gap-2.5 cursor-pointer" onClick={onTryAnother}>
-          <div className="w-9 h-9 rounded-xl bg-[var(--accent)] flex items-center justify-center text-white shadow-md shadow-[var(--accent)]/30">
-            <Zap className="w-5 h-5 fill-current" />
+        <div 
+          className="flex items-center gap-2.5 cursor-pointer group" 
+          onClick={onTryAnother}
+        >
+          <div className="w-8 h-8 rounded-full bg-[var(--accent)] flex items-center justify-center text-white shadow-md shadow-[var(--accent)]/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+            <Zap className="w-4 h-4 fill-current" />
           </div>
-          <span className="text-2xl font-black tracking-tight text-[var(--text-primary)]">
+          <span className="text-xl font-black tracking-tight text-[var(--text-primary)]">
             Fileficx
           </span>
         </div>
 
-        {/* Center Desktop Navigation Menu */}
-        <nav className="hidden md:flex items-center gap-6 text-xs font-semibold text-[var(--text-muted)]">
-          <button
-            onClick={() => triggerModal('guide')}
-            className="hover:text-[var(--text-primary)] transition-colors cursor-pointer flex items-center gap-1.5"
-          >
-            <BookOpen className="w-3.5 h-3.5 text-[var(--accent)]" />
-            <span>Portal Guides</span>
-          </button>
+        {/* Center Lomma-Style Capsule Navigation Pill Links */}
+        <nav className="hidden md:flex items-center gap-1.5 bg-[var(--input-inner-bg)]/50 border border-[var(--border-subtle)] p-1 rounded-full text-xs font-bold text-[var(--text-muted)]">
           <button
             onClick={() => triggerModal('about')}
-            className="hover:text-[var(--text-primary)] transition-colors cursor-pointer flex items-center gap-1.5"
+            className="px-4 py-1.5 rounded-full hover:bg-[var(--bg-card)] hover:text-[var(--accent)] hover:shadow-xs transition-all duration-200 cursor-pointer flex items-center gap-1.5"
           >
             <User className="w-3.5 h-3.5 text-[var(--accent)]" />
             <span>About Us</span>
           </button>
           <button
+            onClick={() => triggerModal('privacy')}
+            className="px-4 py-1.5 rounded-full hover:bg-[var(--bg-card)] hover:text-[var(--accent)] hover:shadow-xs transition-all duration-200 cursor-pointer flex items-center gap-1.5"
+          >
+            <Shield className="w-3.5 h-3.5 text-[var(--accent)]" />
+            <span>Privacy & Terms</span>
+          </button>
+          <button
             onClick={() => triggerModal('contact')}
-            className="hover:text-[var(--text-primary)] transition-colors cursor-pointer flex items-center gap-1.5"
+            className="px-4 py-1.5 rounded-full hover:bg-[var(--bg-card)] hover:text-[var(--accent)] hover:shadow-xs transition-all duration-200 cursor-pointer flex items-center gap-1.5"
           >
             <Mail className="w-3.5 h-3.5 text-[var(--accent)]" />
             <span>Contact Us</span>
           </button>
-          <button
-            onClick={() => triggerModal('privacy')}
-            className="hover:text-[var(--text-primary)] transition-colors cursor-pointer flex items-center gap-1.5"
-          >
-            <Shield className="w-3.5 h-3.5 text-[var(--accent)]" />
-            <span>Privacy Policy</span>
-          </button>
         </nav>
 
-        {/* Center / Right Controls */}
-        <div className="flex items-center gap-3">
+        {/* Right Controls */}
+        <div className="flex items-center gap-2.5">
           {/* Try Another File button - shown when a file is loaded */}
           {hasFile && onTryAnother && (
             <button
               onClick={onTryAnother}
-              className="btn btn-primary text-xs sm:text-sm py-2 px-3.5 sm:px-4 rounded-full flex items-center gap-2 cursor-pointer shadow-md hover:scale-[1.02] active:scale-95 transition-all"
+              className="btn btn-primary text-xs py-1.5 px-4 rounded-full flex items-center gap-2 cursor-pointer shadow-md hover:scale-[1.03] active:scale-95 transition-all duration-200 font-bold"
               title="Return to upload view to select another file"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              <span className="font-bold">Try Another File</span>
+              <span>Try Another File</span>
             </button>
           )}
 
-          {/* Single-click Theme Toggle — moon in light mode, sun in dark mode */}
+          {/* Single-click Theme Toggle */}
           <button
             onClick={onToggleTheme}
-            className="p-2 rounded-full text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
+            className="p-2 rounded-full text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--input-inner-bg)] transition-all duration-200 cursor-pointer"
             title={currentTheme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
             aria-label="Toggle Theme"
           >
             {currentTheme === 'light' ? (
-              <Moon className="w-5 h-5" />
+              <Moon className="w-4 h-4" />
             ) : (
-              <Sun className="w-5 h-5" />
+              <Sun className="w-4 h-4" />
             )}
           </button>
 
-          {/* Mobile Menu Toggle */}
+          {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-xl text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer"
+            className="md:hidden p-2 rounded-full text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer"
             aria-label="Toggle navigation menu"
           >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {mobileMenuOpen ? <X className="w-4.5 h-4.5" /> : <Menu className="w-4.5 h-4.5" />}
           </button>
         </div>
 
       </div>
 
-      {/* Mobile Navigation Dropdown */}
+      {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-[var(--border-subtle)] mt-3 pt-3 pb-2 space-y-2 text-xs font-semibold text-[var(--text-muted)] animate-slide-up">
-          <button
-            onClick={() => triggerModal('guide')}
-            className="w-full text-left px-3 py-2 rounded-lg hover:bg-[var(--bg-card-hover)] flex items-center gap-2"
-          >
-            <BookOpen className="w-4 h-4 text-[var(--accent)]" />
-            <span>Portal Guides & Requirements</span>
-          </button>
+        <div className="md:hidden max-w-5xl mx-auto mt-2 p-3 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-xl space-y-1 text-xs font-bold text-[var(--text-muted)] animate-slide-up">
           <button
             onClick={() => triggerModal('about')}
-            className="w-full text-left px-3 py-2 rounded-lg hover:bg-[var(--bg-card-hover)] flex items-center gap-2"
+            className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-[var(--input-inner-bg)] flex items-center gap-2.5 transition-colors"
           >
             <User className="w-4 h-4 text-[var(--accent)]" />
-            <span>About Us & Creator</span>
-          </button>
-          <button
-            onClick={() => triggerModal('contact')}
-            className="w-full text-left px-3 py-2 rounded-lg hover:bg-[var(--bg-card-hover)] flex items-center gap-2"
-          >
-            <Mail className="w-4 h-4 text-[var(--accent)]" />
-            <span>Contact Us</span>
+            <span>About Us & Story</span>
           </button>
           <button
             onClick={() => triggerModal('privacy')}
-            className="w-full text-left px-3 py-2 rounded-lg hover:bg-[var(--bg-card-hover)] flex items-center gap-2"
+            className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-[var(--input-inner-bg)] flex items-center gap-2.5 transition-colors"
           >
             <Shield className="w-4 h-4 text-[var(--accent)]" />
             <span>Privacy Policy & Terms</span>
+          </button>
+          <button
+            onClick={() => triggerModal('contact')}
+            className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-[var(--input-inner-bg)] flex items-center gap-2.5 transition-colors"
+          >
+            <Mail className="w-4 h-4 text-[var(--accent)]" />
+            <span>Contact Us</span>
           </button>
         </div>
       )}

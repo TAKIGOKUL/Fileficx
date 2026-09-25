@@ -104,7 +104,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             onClick={() => {
               if (!isUserEditing) {
                 setIsUserEditing(true);
-                if (!inputText) setInputText(typedText);
               }
             }}
             className="flex-1 rounded-xl bg-[var(--input-inner-bg)] border border-[var(--border-subtle)] p-2.5 relative cursor-text min-h-[64px]"
@@ -118,7 +117,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               }}
               onFocus={() => {
                 setIsUserEditing(true);
-                if (!inputText && typedText) setInputText(typedText);
               }}
               placeholder='e.g. "Photo: JPG, max 50KB, 200x230px"'
               className="w-full h-full bg-transparent text-[var(--text-primary)] placeholder-[var(--text-muted)]/60 text-xs sm:text-sm font-semibold focus:outline-none resize-none font-sans leading-relaxed"
