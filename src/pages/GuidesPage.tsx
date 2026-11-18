@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { ArrowLeft, ArrowRight, ArrowUpRight, Clock, Lightbulb, BookOpen, CalendarDays } from 'lucide-react';
 import { GUIDES, Guide, GuideBlock, getGuide } from '../data/guides';
 
@@ -177,11 +177,6 @@ const GuideArticle: React.FC<{ guide: Guide; onNavigate: (p: string) => void }> 
 export const GuidesPage: React.FC<GuidesPageProps> = ({ slug, onNavigate }) => {
   const guide = slug ? getGuide(slug) : undefined;
 
-  useEffect(() => {
-    document.title = guide ? `${guide.title} | Fileficx Guides` : 'Guides: Photo, Signature & PDF Requirements | Fileficx';
-    const meta = document.querySelector('meta[name="description"]');
-    if (meta && guide) meta.setAttribute('content', guide.summary);
-  }, [guide]);
 
   if (slug && !guide) {
     return (

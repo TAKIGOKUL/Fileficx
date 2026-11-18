@@ -6,11 +6,14 @@ import { getPDFInfoAndThumbnail } from '../utils/pdfProcessor';
 import { formatFileSize } from '../utils/format';
 import { ImageTool } from './workspace/ImageTool';
 import { PdfTool } from './workspace/PdfTool';
+import { DocxTool } from './workspace/DocxTool';
 
 interface WorkspaceProps {
   file: File;
   parsedReq: ParsedRequirement | null;
   onReplaceFile: () => void;
+  /** Open a different file directly in the workspace (e.g. a converted PDF) */
+  onOpenFile?: (file: File) => void;
 }
 
 interface Info {
@@ -22,8 +25,10 @@ interface Info {
   error?: string;
 }
 
-export const Workspace: React.FC<WorkspaceProps> = ({ file, parsedReq, onReplaceFile }) => {
+export const Workspace: React.FC<WorkspaceProps> = ({ file, parsedReq, onReplaceFile, onOpenFile }) => {
   const isPDF = file.type.includes('pdf') || /\.pdf$/i.test(file.name);
+  const isDocx = /\.docx$/i.test(file.name) || file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+  const isLegacyDoc = !isDocx && (/\.doc$/i.test(file.name) || file.type === 'application/msword');
   const [info, setInfo] = useState<Info>({});
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
@@ -32,7 +37,11 @@ export const Workspace: React.FC<WorkspaceProps> = ({ file, parsedReq, onReplace
     let url: string | null = null;
     setInfo({});
 
-    if (isPDF) {
+    if (isLegacyDoc) {
+      setInfo({ error: 'Old Word files (.doc) aren’t supported. In Word, choose File → Save As → Word Document (.docx) or PDF, then try again.' });
+    } else if (isDocx) {
+      setPreviewUrl(null);
+    } else if (isPDF) {
       getPDFInfoAndThumbnail(file)
         .then((r) => {
           url = r.thumbnailUrl;
@@ -53,7 +62,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({ file, parsedReq, onReplace
       active = false;
       if (url) URL.revokeObjectURL(url);
     };
-  }, [file, isPDF]);
+  }, [file, isPDF, isDocx, isLegacyDoc]);
 
   const ext = file.name.split('.').pop()?.toUpperCase() || (isPDF ? 'PDF' : 'IMG');
   const meta = [
@@ -69,7 +78,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({ file, parsedReq, onReplace
       {/* File bar */}
       <div className="hero-card !rounded-2xl px-4 py-3 mb-5 flex flex-wrap items-center gap-3">
         <span className="icon-tile !w-10 !h-10 overflow-hidden shrink-0">
-          {previewUrl && !isPDF ? <img src={previewUrl} alt="" className="w-full h-full object-cover" /> : isPDF ? <FileText className="w-5 h-5" /> : <FileImage className="w-5 h-5" />}
+          {previewUrl && !isPDF ? <img src={previewUrl} alt="" className="w-full h-full object-cover" /> : isPDF || isDocx ? <FileText className="w-5 h-5" /> : <FileImage className="w-5 h-5" />}
         </span>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
@@ -96,6 +105,8 @@ export const Workspace: React.FC<WorkspaceProps> = ({ file, parsedReq, onReplace
             Choose another file
           </button>
         </div>
+      ) : isDocx ? (
+        <DocxTool file={file} onOpenFile={onOpenFile} onPageCount={(n) => setInfo({ pageCount: n })} />
       ) : isPDF ? (
         <PdfTool file={file} pageCount={info.pageCount} />
       ) : (

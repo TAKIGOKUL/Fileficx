@@ -13,6 +13,11 @@ export interface ImageAnalysis {
   dpi?: number;
 }
 
+const isTiff = (f: File) => /\.tiff?$/i.test(f.name) || /tiff/i.test(f.type);
+const isSvg = (f: File) => /\.svg$/i.test(f.name) || /svg/i.test(f.type);
+/** Formats the worker can't decode (no createImageBitmap support) are handled on the main thread. */
+const needsMainThread = (f: File) => isTiff(f) || isSvg(f);
+
 const isHeic = (f: File) => /\.(heic|heif)$/i.test(f.name) || /hei[cf]/i.test(f.type);
 
 const friendlyError = (file: File, err: unknown): Error => {
@@ -22,8 +27,26 @@ const friendlyError = (file: File, err: unknown): Error => {
   return err instanceof Error ? err : new Error('Could not read this image.');
 };
 
+async function decodeTiff(file: File) {
+  const mod = await import('utif2');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const UTIF: typeof import('utif2') = (mod as any).default ?? mod;
+  const buf = await file.arrayBuffer();
+  const ifds = UTIF.decode(buf);
+  if (!ifds.length) throw new Error('This TIFF file has no images.');
+  UTIF.decodeImage(buf, ifds[0]); // first page
+  const { width: w, height: h } = ifds[0];
+  const rgba = UTIF.toRGBA8(ifds[0]);
+  const c = document.createElement('canvas');
+  c.width = w;
+  c.height = h;
+  c.getContext('2d')!.putImageData(new ImageData(Uint8ClampedArray.from(rgba), w, h), 0, 0);
+  return { src: c as CanvasImageSource, w, h, close: () => {} };
+}
+
 async function decode(file: File): Promise<{ src: CanvasImageSource; w: number; h: number; close: () => void }> {
-  if (typeof createImageBitmap === 'function') {
+  if (isTiff(file)) return decodeTiff(file);
+  if (typeof createImageBitmap === 'function' && !isSvg(file)) {
     const bmp = await createImageBitmap(file);
     return { src: bmp, w: bmp.width, h: bmp.height, close: () => bmp.close() };
   }
@@ -33,7 +56,14 @@ async function decode(file: File): Promise<{ src: CanvasImageSource; w: number; 
     img.decoding = 'async';
     img.src = url;
     await img.decode();
-    return { src: img, w: img.naturalWidth, h: img.naturalHeight, close: () => {} };
+    // SVGs without explicit size report 0×0; give them a sensible raster size
+    const w = img.naturalWidth || 1024;
+    const h = img.naturalHeight || Math.round(w * 0.75);
+    if (!img.naturalWidth) {
+      img.width = w;
+      img.height = h;
+    }
+    return { src: img, w, h, close: () => {} };
   } finally {
     URL.revokeObjectURL(url);
   }
@@ -133,7 +163,7 @@ async function runOnMainThread(file: File, config: ImageProcessingConfig) {
 }
 
 async function run(file: File, config: ImageProcessingConfig): Promise<PipelineResult & { srcW: number; srcH: number }> {
-  const w = getWorker();
+  const w = needsMainThread(file) ? null : getWorker();
   if (w) {
     const id = ++seq;
     const reply = await new Promise<WorkerReply>((resolve) => {

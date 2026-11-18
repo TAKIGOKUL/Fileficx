@@ -46,7 +46,7 @@ const FEATURES = [
   { icon: Gauge, title: 'Hit any KB range', body: 'Automatically steps JPEG quality down until the file fits limits like 20–50 KB or "under 240 KB", keeping as much detail as the budget allows.' },
   { icon: Printer, title: 'Real DPI metadata', body: 'Writes 200 or 300 DPI directly into the JPEG header, so strict validators read the value they expect.' },
   { icon: PaintBucket, title: 'Clean backgrounds', body: 'Fill transparent backgrounds with white or any colour you choose, and convert signatures to grayscale.' },
-  { icon: FileStack, title: 'PDF studio', body: 'Preview, rotate, split, extract and merge pages, and shrink scanned certificates for upload limits.' },
+  { icon: FileStack, title: 'PDF & Word studio', body: 'Turn Word (DOCX) files into PDFs, then rotate, split, extract, merge and shrink them to fit upload limits.' },
   { icon: ShieldCheck, title: 'Private by design', body: 'All processing uses your device\'s memory. Close the tab and every trace of the file is gone.' },
 ];
 
@@ -66,6 +66,10 @@ const FAQS = [
   {
     q: 'Which exams and portals does it work with?',
     a: 'Any portal that publishes its requirements. There are presets for common SSC, UPSC, IBPS, NTA, passport and visa formats, and you can paste any custom rule, such as "JPG, 100 × 120 px, 10–30 KB".',
+  },
+  {
+    q: 'Which file types can I upload?',
+    a: 'Photos and scans in JPG, PNG, WEBP, GIF, BMP, AVIF, TIFF, ICO and SVG, plus PDF documents and Word files (DOCX). HEIC photos from iPhones open in Safari; in other browsers, set your iPhone camera to "Most Compatible". Images can be saved as JPG, PNG, WEBP or PDF, and Word files convert to PDF.',
   },
   {
     q: 'Will compression make my photo blurry?',
@@ -98,7 +102,7 @@ export const HomeContent: React.FC<HomeContentProps> = ({ onUsePreset, onNavigat
           {[
             ['0 bytes', 'uploaded to servers'],
             [`${PORTAL_PRESETS.length + 2}+`, 'ready-made presets'],
-            ['5 formats', 'JPG, PNG, WEBP, HEIC, PDF'],
+            ['12 formats', 'images, PDF & Word'],
             ['₹0 / $0', 'free, no sign-up'],
           ].map(([value, label]) => (
             <div key={label} className="bg-[var(--bg-elevated)] px-5 py-6 text-center">
@@ -314,3 +318,37 @@ export const HomeContent: React.FC<HomeContentProps> = ({ onUsePreset, onNavigat
     </div>
   );
 };
+
+/** Compact guide links shown under the workspace so the tool screen also carries helpful content. */
+export const WorkspaceGuides: React.FC<{ onNavigate: (page: string) => void }> = ({ onNavigate }) => (
+  <section aria-labelledby="ws-guides" className="max-w-7xl mx-auto mt-16">
+    <div className="flex items-end justify-between gap-4 mb-5">
+      <div>
+        <p className="eyebrow mb-2">Before you upload</p>
+        <h2 id="ws-guides" className="text-2xl font-extrabold text-[var(--text-primary)]">
+          Avoid the most common rejections
+        </h2>
+      </div>
+      <button onClick={() => onNavigate('guides')} className="btn btn-outline text-xs !py-1.5 !px-3.5">
+        <BookOpen className="w-3.5 h-3.5" /> All guides
+      </button>
+    </div>
+    <div className="grid md:grid-cols-3 gap-4">
+      {GUIDES.filter((g) => ['why-portals-reject-photos', 'compress-photo-to-exact-kb', 'reduce-pdf-size-for-uploads'].includes(g.slug)).map((g) => (
+        <a
+          key={g.slug}
+          href={`/guides/${g.slug}`}
+          onClick={(e) => {
+            e.preventDefault();
+            onNavigate(`guides/${g.slug}`);
+          }}
+          className="group rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-5 card-lift"
+        >
+          <span className="text-[11px] font-semibold text-[var(--accent-text)]">{g.category}</span>
+          <h3 className="mt-1.5 text-[15px] font-bold text-[var(--text-primary)] leading-snug">{g.title}</h3>
+          <p className="mt-2 text-sm text-[var(--text-secondary)] leading-relaxed line-clamp-2">{g.summary}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+);
