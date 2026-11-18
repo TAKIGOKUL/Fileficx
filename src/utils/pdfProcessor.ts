@@ -350,3 +350,86 @@ export function parsePageRange(rangeStr: string, maxPages: number): number[] {
   }
   return [...pages].sort((a, b) => a - b);
 }
+
+/**
+ * Build a PDF from rendered page canvases. With a KB target, picks the highest JPEG quality
+ * that fits and, if needed, downsamples pages until it does.
+ */
+export async function canvasesToPdf(
+  pages: { canvas: HTMLCanvasElement; widthPt: number; heightPt: number }[],
+  opts: { targetKB?: number; grayscale?: boolean; onProgress?: (msg: string) => void } = {}
+): Promise<Blob> {
+  const { PDFDocument } = await pdfLib();
+  let canvases = pages.map((p) => p.canvas);
+
+  if (opts.grayscale) {
+    for (const c of canvases) {
+      const ctx = c.getContext('2d', { willReadFrequently: true })!;
+      const img = ctx.getImageData(0, 0, c.width, c.height);
+      const d = img.data;
+      for (let i = 0; i < d.length; i += 4) {
+        const g = (d[i] * 299 + d[i + 1] * 587 + d[i + 2] * 114) / 1000;
+        d[i] = d[i + 1] = d[i + 2] = g;
+      }
+      ctx.putImageData(img, 0, 0);
+    }
+  }
+
+  const encodeAll = (q: number) => Promise.all(canvases.map((c) => toBlob(c, 'image/jpeg', q)));
+  const total = (bs: Blob[]) => bs.reduce((s, b) => s + b.size, 0);
+  let chosen: Blob[] | null = null;
+
+  if (!opts.targetKB) {
+    chosen = await encodeAll(0.88);
+  } else {
+    const budget = opts.targetKB * 1024 - (1200 + pages.length * 600);
+    for (let attempt = 0; attempt < 4 && !chosen; attempt++) {
+      let lo = 0.15;
+      let hi = 0.92;
+      let smallest = Infinity;
+      const top = await encodeAll(hi);
+      if (total(top) <= budget) chosen = top;
+      else {
+        for (let i = 0; i < 6 && hi - lo > 0.03; i++) {
+          const q = (lo + hi) / 2;
+          opts.onProgress?.(`Fitting under ${opts.targetKB} KB (pass ${i + 1})…`);
+          const bs = await encodeAll(q);
+          if (total(bs) <= budget) {
+            chosen = bs;
+            lo = q;
+          } else {
+            smallest = Math.min(smallest, total(bs));
+            hi = q;
+          }
+        }
+        if (!chosen) {
+          const floor = await encodeAll(0.15);
+          if (total(floor) <= budget) chosen = floor;
+          else smallest = total(floor);
+        }
+      }
+      if (!chosen) {
+        const f = Math.max(0.4, Math.min(0.85, Math.sqrt(budget / smallest) * 0.95));
+        canvases = canvases.map((c) => {
+          const n = document.createElement('canvas');
+          n.width = Math.max(1, Math.round(c.width * f));
+          n.height = Math.max(1, Math.round(c.height * f));
+          const ctx = n.getContext('2d')!;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(c, 0, 0, n.width, n.height);
+          return n;
+        });
+      }
+    }
+    if (!chosen) throw new Error(`Couldn't fit this document under ${opts.targetKB} KB while keeping it readable. Try a higher limit.`);
+  }
+
+  opts.onProgress?.('Assembling PDF…');
+  const out = await PDFDocument.create();
+  for (let i = 0; i < chosen.length; i++) {
+    const img = await out.embedJpg(await chosen[i].arrayBuffer());
+    const { widthPt: w, heightPt: h } = pages[i];
+    out.addPage([w, h]).drawImage(img, { x: 0, y: 0, width: w, height: h });
+  }
+  return pdfBlob(await out.save({ useObjectStreams: true }));
+}

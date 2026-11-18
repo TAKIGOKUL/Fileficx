@@ -10,8 +10,10 @@ import { PrivacyPage } from './pages/PrivacyPage';
 import { TermsPage } from './pages/TermsPage';
 import { ContactPage } from './pages/ContactPage';
 import { SocialsVertical } from './components/SocialsVertical';
-import { HomeContent } from './components/HomeContent';
+import { HomeContent, WorkspaceGuides } from './components/HomeContent';
 import { GuidesPage } from './pages/GuidesPage';
+import { seoFor, SITE_URL } from './seo';
+import { setAdsAllowed } from './ads';
 import { ParsedRequirement } from './types';
 import { parseInstructions } from './utils/instructionParser';
 
@@ -28,15 +30,16 @@ const parsePath = (raw: string): { page: PageRoute; slug?: string } => {
   return { page, slug: page === 'guides' && second ? second : undefined };
 };
 
-const DEFAULT_DESCRIPTION =
-  typeof document !== 'undefined'
-    ? document.querySelector('meta[name="description"]')?.getAttribute('content') ?? ''
-    : '';
+interface AppProps {
+  /** Path to render when there is no window (build-time pre-rendering) */
+  initialPath?: string;
+}
 
-export const App: React.FC = () => {
+const setMeta = (selector: string, attr: string, value: string) => document.querySelector(selector)?.setAttribute(attr, value);
+
+export const App: React.FC<AppProps> = ({ initialPath = '/' }) => {
   // Navigation State with URL Path Sync
-  const getInitialRoute = () =>
-    typeof window !== 'undefined' ? parsePath(window.location.pathname) : { page: 'home' as PageRoute };
+  const getInitialRoute = () => parsePath(typeof window !== 'undefined' ? window.location.pathname : initialPath);
 
   const [route, setRoute] = useState<{ page: PageRoute; slug?: string }>(getInitialRoute);
   const currentPage = route.page;
@@ -48,30 +51,23 @@ export const App: React.FC = () => {
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Dynamic SEO Page Title Management
+  const seo = seoFor(currentPage, route.slug);
+
+  // Per-route head tags (pre-rendered HTML ships the same values for crawlers)
   useEffect(() => {
-    if (typeof document === 'undefined') return;
-    if (currentPage === 'guides') return; // GuidesPage manages its own title & description
-    document.querySelector('meta[name="description"]')?.setAttribute('content', DEFAULT_DESCRIPTION);
-    switch (currentPage) {
-      case 'about':
-        document.title = 'About Us — Precision Document Optimization | Fileficx';
-        break;
-      case 'privacy':
-        document.title = 'Privacy Policy & GDPR Compliance | Fileficx';
-        break;
-      case 'terms':
-        document.title = 'Terms and Conditions | Fileficx';
-        break;
-      case 'contact':
-        document.title = 'Contact Us & Support | Fileficx';
-        break;
-      default:
-        document.title = 'Fileficx — Free In-Browser Photo & Document Resizer for Exam & Visa Applications';
-    }
-  }, [currentPage]);
+    document.title = seo.title;
+    const url = SITE_URL + seo.path;
+    setMeta('meta[name="description"]', 'content', seo.description);
+    setMeta('link[rel="canonical"]', 'href', url);
+    setMeta('meta[property="og:url"]', 'content', url);
+    setMeta('meta[property="og:title"]', 'content', seo.title);
+    setMeta('meta[property="og:description"]', 'content', seo.description);
+    setMeta('meta[name="twitter:title"]', 'content', seo.title);
+    setMeta('meta[name="twitter:description"]', 'content', seo.description);
+  }, [seo.title, seo.description, seo.path]);
 
   const handleNavigate = (page: string) => {
     const next = parsePath(page === 'home' ? '' : page);
@@ -121,6 +117,11 @@ export const App: React.FC = () => {
   // Application State
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isWorkspaceActive, setIsWorkspaceActive] = useState<boolean>(false);
+
+  // Only request ads on screens with real publisher content, never on the bare tool screen
+  useEffect(() => {
+    setAdsAllowed(seo.ads && !(currentPage === 'home' && isWorkspaceActive));
+  }, [seo.ads, currentPage, isWorkspaceActive]);
   const [parsedReq, setParsedReq] = useState<ParsedRequirement | null>(() => {
     return parseInstructions(
       'Photo: JPG, max 50KB, 200x230px, 200 DPI, white background'
@@ -220,7 +221,7 @@ export const App: React.FC = () => {
               Drop your file anywhere to upload!
             </h2>
             <p className="text-xs text-[var(--text-muted)] font-medium">
-              Images (JPG, PNG, WEBP, HEIC) or Documents (PDF)
+              Images (JPG, PNG, WEBP, HEIC, GIF, TIFF…), PDF or Word (DOCX)
             </p>
           </div>
         </div>
@@ -295,8 +296,13 @@ export const App: React.FC = () => {
                           file={uploadedFile}
                           parsedReq={parsedReq}
                           onReplaceFile={handleReset}
+                          onOpenFile={(f) => {
+                            setUploadedFile(f);
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                          }}
                         />
                       </Suspense>
+                      <WorkspaceGuides onNavigate={handleNavigate} />
                     </div>
                   )
                 )}

@@ -41,7 +41,12 @@ const DEMOS = [
   { from: ['marksheet.pdf', '6.4 MB', '4 pages'], to: ['marksheet_compressed.pdf', '288 KB', '4 pages · readable'], tag: 'Certificate' },
 ];
 
-const ACCEPT = 'image/jpeg,image/png,image/webp,application/pdf,image/heic,.jpg,.jpeg,.png,.webp,.pdf,.heic';
+export const ACCEPT = [
+  'image/*',
+  'application/pdf',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  '.jpg,.jpeg,.png,.webp,.heic,.heif,.gif,.bmp,.avif,.tif,.tiff,.ico,.svg,.pdf,.docx',
+].join(',');
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
   onParsed,
@@ -129,7 +134,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     if (files && files.length) onFileSelect(files[0]);
   };
 
-  const isPdf = currentFile && (/pdf/.test(currentFile.type) || /\.pdf$/i.test(currentFile.name));
+  const isPdf = currentFile && (/pdf|word/.test(currentFile.type) || /\.(pdf|docx?)$/i.test(currentFile.name));
   const d = DEMOS[demo];
 
   return (
@@ -304,7 +309,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     <UploadCloud className="w-6 h-6" />
                   </span>
                   <p className="text-[15px] font-bold text-[var(--text-primary)]">Drop files here or click to upload</p>
-                  <p className="mt-1 text-xs text-[var(--text-muted)] font-mono">JPG · PNG · WEBP · HEIC · PDF</p>
+                  <p className="mt-1 text-xs text-[var(--text-muted)] font-mono">JPG · PNG · WEBP · HEIC · GIF · TIFF · PDF · DOCX</p>
                 </>
               )}
             </div>
