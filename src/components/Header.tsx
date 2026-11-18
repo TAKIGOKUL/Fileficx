@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Sun, Moon, RotateCcw, Menu, X } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Sun, Moon, RotateCcw, Menu, X, ArrowRight } from 'lucide-react';
 
 interface HeaderProps {
   currentTheme: 'light' | 'dark';
@@ -10,15 +10,35 @@ interface HeaderProps {
   onNavigate?: (page: string) => void;
 }
 
+const PRIMARY_NAV = [
+  { id: 'home', label: 'Tool' },
+  { id: 'guides', label: 'Guides' },
+  { id: 'about', label: 'About' },
+  { id: 'contact', label: 'Contact' },
+];
+
+const MOBILE_EXTRA = [
+  { id: 'privacy', label: 'Privacy Policy' },
+  { id: 'terms', label: 'Terms & Conditions' },
+];
+
 export const Header: React.FC<HeaderProps> = ({
   currentTheme,
   onToggleTheme,
   hasFile = false,
   onTryAnother,
   currentPage = 'home',
-  onNavigate = () => {}
+  onNavigate = () => {},
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const handleNav = (page: string) => {
     setMobileMenuOpen(false);
@@ -26,91 +46,66 @@ export const Header: React.FC<HeaderProps> = ({
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const isActive = (id: string) => currentPage === id || (id === 'guides' && currentPage.startsWith('guides'));
+
   return (
-    <header className="sticky top-3 z-50 w-full px-4 sm:px-6 transition-all duration-300">
-      <div className="max-w-5xl mx-auto rounded-full bg-[var(--bg-card)]/85 backdrop-blur-xl border border-[var(--border-subtle)] shadow-xl px-5 sm:px-7 py-2.5 flex items-center justify-between gap-4 transition-all duration-300">
-        
-        {/* Brand Logo */}
-        <div 
-          className="flex items-center gap-2.5 cursor-pointer group" 
-          onClick={() => {
+    <header className="sticky top-0 z-50 w-full px-3 sm:px-6 pt-3 transition-all duration-300">
+      <div
+        className={`max-w-6xl mx-auto rounded-full bg-[var(--header-bg)] backdrop-blur-xl border px-3 sm:px-5 py-2 flex items-center justify-between gap-3 transition-all duration-300 ${
+          scrolled ? 'border-[var(--border)] shadow-[var(--shadow-soft)]' : 'border-[var(--border-subtle)]'
+        }`}
+      >
+        {/* Brand */}
+        <a
+          href="/"
+          onClick={(e) => {
+            e.preventDefault();
             if (currentPage !== 'home') handleNav('home');
             else if (onTryAnother) onTryAnother();
           }}
+          className="flex items-center gap-2.5 group shrink-0"
+          aria-label="Fileficx home"
         >
-          <div className="w-8 h-8 rounded-full overflow-hidden shadow-md shadow-[var(--accent)]/30 group-hover:scale-110 transition-all duration-300 border border-[var(--border-subtle)] bg-black flex items-center justify-center">
-            <img 
-              src="/logo.png" 
-              alt="Fileficx Logo" 
-              className="w-full h-full object-cover" 
-            />
-          </div>
-          <span className="text-xl font-black tracking-tight text-[var(--text-primary)]">
-            Fileficx
+          <span className="w-9 h-9 rounded-full overflow-hidden ring-1 ring-[var(--border)] bg-[var(--logo-bg)] flex items-center justify-center p-0.5 group-hover:scale-105 transition-transform duration-300 shadow-md shadow-[var(--accent-glow)]">
+            <img src="/logo.png" alt="" className="w-full h-full object-cover rounded-full" />
           </span>
-        </div>
+          <span className="flex flex-col text-left leading-none">
+            <span className="font-display text-[17px] font-extrabold tracking-tight text-[var(--text-primary)]">
+              Fileficx
+            </span>
+            <span className="hidden sm:block text-[9.5px] font-semibold text-[var(--text-muted)] tracking-wide mt-1">
+              Photo &amp; document resizer
+            </span>
+          </span>
+        </a>
 
-        {/* Center Lomma-Style Capsule Navigation Pill Links */}
-        <nav className="hidden md:flex items-center gap-1 bg-[var(--input-inner-bg)]/60 border border-[var(--border-subtle)] p-1 rounded-full text-xs font-semibold text-[var(--text-muted)]">
-          <button
-            onClick={() => handleNav('home')}
-            className={`px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${
-              currentPage === 'home'
-                ? 'bg-[var(--bg-card)] text-[var(--text-primary)] font-bold shadow-xs'
-                : 'hover:text-[var(--text-primary)]'
-            }`}
-          >
-            Home
-          </button>
-          <button
-            onClick={() => handleNav('about')}
-            className={`px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${
-              currentPage === 'about'
-                ? 'bg-[var(--bg-card)] text-[var(--text-primary)] font-bold shadow-xs'
-                : 'hover:text-[var(--text-primary)]'
-            }`}
-          >
-            About
-          </button>
-          <button
-            onClick={() => handleNav('privacy')}
-            className={`px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${
-              currentPage === 'privacy'
-                ? 'bg-[var(--bg-card)] text-[var(--text-primary)] font-bold shadow-xs'
-                : 'hover:text-[var(--text-primary)]'
-            }`}
-          >
-            Privacy
-          </button>
-          <button
-            onClick={() => handleNav('terms')}
-            className={`px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${
-              currentPage === 'terms'
-                ? 'bg-[var(--bg-card)] text-[var(--text-primary)] font-bold shadow-xs'
-                : 'hover:text-[var(--text-primary)]'
-            }`}
-          >
-            Terms
-          </button>
-          <button
-            onClick={() => handleNav('contact')}
-            className={`px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${
-              currentPage === 'contact'
-                ? 'bg-[var(--bg-card)] text-[var(--text-primary)] font-bold shadow-xs'
-                : 'hover:text-[var(--text-primary)]'
-            }`}
-          >
-            Contact
-          </button>
+        {/* Desktop nav */}
+        <nav
+          aria-label="Primary"
+          className="hidden md:flex items-center gap-0.5 bg-[var(--input-inner-bg)] border border-[var(--border-subtle)] p-1 rounded-full text-[13px] font-semibold"
+        >
+          {PRIMARY_NAV.map((item) => (
+            <a
+              key={item.id}
+              href={item.id === 'home' ? '/' : `/${item.id}`}
+              onClick={(e) => {
+                e.preventDefault();
+                handleNav(item.id);
+              }}
+              aria-current={isActive(item.id) ? 'page' : undefined}
+              className="nav-pill"
+            >
+              {item.label}
+            </a>
+          ))}
         </nav>
 
-        {/* Right Controls */}
-        <div className="flex items-center gap-2.5">
-          {/* Try Another File button - shown when a file is loaded */}
+        {/* Actions */}
+        <div className="flex items-center gap-1.5">
           {hasFile && onTryAnother && currentPage === 'home' && (
             <button
               onClick={onTryAnother}
-              className="btn btn-primary text-xs py-1.5 px-4 rounded-full flex items-center gap-2 cursor-pointer shadow-md hover:scale-[1.03] active:scale-95 transition-all duration-200 font-bold"
+              className="btn btn-outline text-xs !py-1.5 !px-3.5"
               title="Return to upload view to select another file"
             >
               <RotateCcw className="w-3.5 h-3.5" />
@@ -118,76 +113,53 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
           )}
 
-          {/* Single-click Theme Toggle */}
+          {currentPage !== 'home' && (
+            <button onClick={() => handleNav('home')} className="hidden sm:inline-flex btn btn-primary text-xs !py-1.5 !px-4">
+              <span>Open the tool</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          )}
+
           <button
             onClick={onToggleTheme}
-            className="p-2 rounded-full text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--input-inner-bg)] transition-all duration-200 cursor-pointer"
-            title={currentTheme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+            className="w-9 h-9 rounded-full flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--hover-surface)] border border-transparent hover:border-[var(--border-subtle)] transition-all duration-200 cursor-pointer"
+            title={currentTheme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
             aria-label="Toggle Theme"
           >
-            {currentTheme === 'light' ? (
-              <Moon className="w-4 h-4" />
-            ) : (
-              <Sun className="w-4 h-4" />
-            )}
+            {currentTheme === 'light' ? <Moon className="w-[18px] h-[18px]" /> : <Sun className="w-[18px] h-[18px] text-amber-300" />}
           </button>
 
-          {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-full text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer"
+            className="md:hidden w-9 h-9 rounded-full flex items-center justify-center text-[var(--text-secondary)] hover:bg-[var(--hover-surface)] cursor-pointer"
             aria-label="Toggle navigation menu"
+            aria-expanded={mobileMenuOpen}
           >
-            {mobileMenuOpen ? <X className="w-4.5 h-4.5" /> : <Menu className="w-4.5 h-4.5" />}
+            {mobileMenuOpen ? <X className="w-5 h-5 text-[var(--accent)]" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
-
       </div>
 
-      {/* Mobile Menu Dropdown */}
+      {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden max-w-5xl mx-auto mt-2 p-2 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-xl space-y-1 text-xs font-semibold text-[var(--text-muted)] animate-slide-up">
-          <button
-            onClick={() => handleNav('home')}
-            className={`w-full text-left px-4 py-2.5 rounded-xl transition-colors cursor-pointer ${
-              currentPage === 'home' ? 'bg-[var(--input-inner-bg)] text-[var(--text-primary)] font-bold' : 'hover:bg-[var(--input-inner-bg)] hover:text-[var(--text-primary)]'
-            }`}
-          >
-            Home
-          </button>
-          <button
-            onClick={() => handleNav('about')}
-            className={`w-full text-left px-4 py-2.5 rounded-xl transition-colors cursor-pointer ${
-              currentPage === 'about' ? 'bg-[var(--input-inner-bg)] text-[var(--text-primary)] font-bold' : 'hover:bg-[var(--input-inner-bg)] hover:text-[var(--text-primary)]'
-            }`}
-          >
-            About Us
-          </button>
-          <button
-            onClick={() => handleNav('privacy')}
-            className={`w-full text-left px-4 py-2.5 rounded-xl transition-colors cursor-pointer ${
-              currentPage === 'privacy' ? 'bg-[var(--input-inner-bg)] text-[var(--text-primary)] font-bold' : 'hover:bg-[var(--input-inner-bg)] hover:text-[var(--text-primary)]'
-            }`}
-          >
-            Privacy Policy
-          </button>
-          <button
-            onClick={() => handleNav('terms')}
-            className={`w-full text-left px-4 py-2.5 rounded-xl transition-colors cursor-pointer ${
-              currentPage === 'terms' ? 'bg-[var(--input-inner-bg)] text-[var(--text-primary)] font-bold' : 'hover:bg-[var(--input-inner-bg)] hover:text-[var(--text-primary)]'
-            }`}
-          >
-            Terms & Conditions
-          </button>
-          <button
-            onClick={() => handleNav('contact')}
-            className={`w-full text-left px-4 py-2.5 rounded-xl transition-colors cursor-pointer ${
-              currentPage === 'contact' ? 'bg-[var(--input-inner-bg)] text-[var(--text-primary)] font-bold' : 'hover:bg-[var(--input-inner-bg)] hover:text-[var(--text-primary)]'
-            }`}
-          >
-            Contact Us
-          </button>
-        </div>
+        <nav
+          aria-label="Mobile"
+          className="md:hidden max-w-6xl mx-auto mt-2 p-2 rounded-2xl bg-[var(--bg-elevated)] border border-[var(--border-subtle)] shadow-[var(--shadow-lift)] text-sm font-semibold animate-slide-up"
+        >
+          {[...PRIMARY_NAV, ...MOBILE_EXTRA].map((item) => (
+            <button
+              key={item.id}
+              onClick={() => handleNav(item.id)}
+              className={`w-full text-left px-4 py-3 rounded-xl transition-colors cursor-pointer ${
+                isActive(item.id)
+                  ? 'bg-[var(--accent-subtle)] text-[var(--accent-text)]'
+                  : 'text-[var(--text-secondary)] hover:bg-[var(--hover-surface)] hover:text-[var(--text-primary)]'
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </nav>
       )}
     </header>
   );

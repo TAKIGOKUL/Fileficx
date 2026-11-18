@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeAll } from 'vitest';
+import { describe, it, expect, vi, beforeAll, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import App from '../App';
 
@@ -11,6 +11,10 @@ beforeAll(() => {
 });
 
 describe('App Component', () => {
+  beforeEach(() => {
+    window.history.replaceState(null, '', '/');
+  });
+
   it('renders hero headline and smart parser', () => {
     render(<App />);
     expect(screen.getByText(/Make every file/i)).toBeDefined();
@@ -23,7 +27,7 @@ describe('App Component', () => {
     expect(screen.getAllByText(/No files are uploaded to any server/i).length).toBeGreaterThan(0);
   });
 
-  it('attaches file on drop/select and proceeds to workspace only when Process button is clicked', () => {
+  it('attaches file on drop/select and proceeds to workspace only when Process button is clicked', async () => {
     render(<App />);
     
     // Initially hero and dropzone are present, no "Try Another File" in navbar
@@ -45,8 +49,8 @@ describe('App Component', () => {
     // Clicking "Process Now →" proceeds to the 2-Pane Workspace
     fireEvent.click(processBtn);
 
-    expect(screen.getByText(/PANE 1 · ORIGINAL FILE PREVIEW/i)).toBeDefined();
-    expect(screen.getByText(/PANE 2 · MODIFIED FILE/i)).toBeDefined();
+    expect(await screen.findByText(/Portal checks/i)).toBeDefined();
+    expect(screen.getByText(/Replace file/i)).toBeDefined();
 
     // "Try Another File" button is present on the navbar
     const tryAnotherBtn = screen.getByText(/Try Another File/i);
@@ -56,42 +60,42 @@ describe('App Component', () => {
     fireEvent.click(tryAnotherBtn);
     expect(screen.getByText(/Make every file/i)).toBeDefined();
     expect(screen.getByText(/Drop files here or click to upload/i)).toBeDefined();
-    expect(screen.queryByText(/PANE 1 · ORIGINAL FILE PREVIEW/i)).toBeNull();
+    expect(screen.queryByText(/Portal checks/i)).toBeNull();
   });
 
-  it('renders side vertical ads and bottom banner, and has no top banner', () => {
+  it('does not render placeholder ad units without a real AdSense slot ID', () => {
     const { container } = render(<App />);
-    
-    // Top banner should NOT exist
-    const topBanner = container.querySelector('.ad-slot.ad-top');
-    expect(topBanner).toBeNull();
-
-    // Side vertical skyscraper ads (left and right)
-    const sideLeft = container.querySelector('.ad-slot[data-ad-slot="side-left"]');
-    const sideRight = container.querySelector('.ad-slot[data-ad-slot="side-right"]');
-    expect(sideLeft).not.toBeNull();
-    expect(sideRight).not.toBeNull();
-
-    // Bottom banner
-    const bottomBanner = container.querySelector('.ad-slot.ad-bottom[data-ad-slot="bottom-banner"]');
-    expect(bottomBanner).not.toBeNull();
+    expect(container.querySelector('ins.adsbygoogle')).toBeNull();
   });
 
-  it('renders sidebar ad slot inside workspace when file is loaded and processed', () => {
-    const { container } = render(<App />);
-    const file = new File(['fake content'], 'test_signature.png', { type: 'image/png' });
-    const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
-    fireEvent.change(fileInput, { target: { files: [file] } });
-
-    const processBtn = screen.getByText(/Process Now →/i);
-    fireEvent.click(processBtn);
-
-    // Sidebar banner
-    const sidebarBanner = container.querySelector('.ad-slot.ad-sidebar[data-ad-slot="sidebar"]');
-    expect(sidebarBanner).not.toBeNull();
+  it('renders the content sections on the homepage', () => {
+    render(<App />);
+    expect(screen.getByText(/Frequently asked questions/i)).toBeDefined();
+    expect(screen.getByText(/Guides for stress-free applications/i)).toBeDefined();
+    expect(screen.getAllByText(/Use preset/i).length).toBeGreaterThan(0);
   });
 
-  it('allows dropping a file anywhere on the window and proceeding upon Parse click', () => {
+  it('navigates to the guides hub and opens an article', () => {
+    render(<App />);
+    fireEvent.click(screen.getAllByText(/^Guides$/)[0]);
+    expect(screen.getByText(/Get your application files right the first time/i)).toBeDefined();
+
+    fireEvent.click(screen.getByText(/DPI vs Pixels: What Application Forms Actually Mean/i));
+    expect(window.location.pathname).toBe('/guides/dpi-vs-pixels-explained');
+    expect(screen.getByRole('heading', { name: /Pixels are the image itself/i })).toBeDefined();
+  });
+
+  it('toggles between light and dark themes', () => {
+    render(<App />);
+    const toggle = screen.getByLabelText('Toggle Theme');
+    const before = document.documentElement.getAttribute('data-theme');
+    fireEvent.click(toggle);
+    const after = document.documentElement.getAttribute('data-theme');
+    expect(after).not.toBe(before);
+    expect(['light', 'dark']).toContain(after);
+  });
+
+  it('allows dropping a file anywhere on the window and proceeding upon Parse click', async () => {
     render(<App />);
     
     const file = new File(['global drop content'], 'global_photo.jpg', { type: 'image/jpeg' });
@@ -109,7 +113,7 @@ describe('App Component', () => {
     fireEvent.click(processBtn);
 
     // 2-Pane Workspace is displayed after proceeding
-    expect(screen.getByText(/PANE 1 · ORIGINAL FILE PREVIEW/i)).toBeDefined();
+    expect(await screen.findByText(/Portal checks/i)).toBeDefined();
     expect(screen.getByText(/Try Another File/i)).toBeDefined();
   });
 });

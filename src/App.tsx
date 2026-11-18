@@ -1,9 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense, lazy } from 'react';
 import { UploadCloud } from 'lucide-react';
 import { Header } from './components/Header';
 import { HeroSection } from './components/HeroSection';
-import { FileDropzone } from './components/FileDropzone';
-import { Workspace } from './components/Workspace';
 import { AdBanner } from './components/AdBanner';
 import { Footer } from './components/Footer';
 import { ConsentBanner } from './components/ConsentBanner';
@@ -12,29 +10,41 @@ import { PrivacyPage } from './pages/PrivacyPage';
 import { TermsPage } from './pages/TermsPage';
 import { ContactPage } from './pages/ContactPage';
 import { SocialsVertical } from './components/SocialsVertical';
+import { HomeContent } from './components/HomeContent';
+import { GuidesPage } from './pages/GuidesPage';
 import { ParsedRequirement } from './types';
 import { parseInstructions } from './utils/instructionParser';
 
-type PageRoute = 'home' | 'about' | 'privacy' | 'terms' | 'contact';
+// PDF/image engines are heavy; load them only when a file is opened
+const Workspace = lazy(() => import('./components/Workspace'));
+
+type PageRoute = 'home' | 'about' | 'privacy' | 'terms' | 'contact' | 'guides';
+
+const VALID_PAGES: PageRoute[] = ['home', 'about', 'privacy', 'terms', 'contact', 'guides'];
+
+const parsePath = (raw: string): { page: PageRoute; slug?: string } => {
+  const [first, second] = raw.toLowerCase().replace(/^\/+|\/+$/g, '').split('/');
+  const page = VALID_PAGES.includes(first as PageRoute) ? (first as PageRoute) : 'home';
+  return { page, slug: page === 'guides' && second ? second : undefined };
+};
+
+const DEFAULT_DESCRIPTION =
+  typeof document !== 'undefined'
+    ? document.querySelector('meta[name="description"]')?.getAttribute('content') ?? ''
+    : '';
 
 export const App: React.FC = () => {
   // Navigation State with URL Path Sync
-  const getInitialPage = (): PageRoute => {
-    if (typeof window !== 'undefined') {
-      const path = window.location.pathname.toLowerCase().replace(/^\/+/, '');
-      if (path === 'about') return 'about';
-      if (path === 'privacy') return 'privacy';
-      if (path === 'terms') return 'terms';
-      if (path === 'contact') return 'contact';
-    }
-    return 'home';
-  };
+  const getInitialRoute = () =>
+    typeof window !== 'undefined' ? parsePath(window.location.pathname) : { page: 'home' as PageRoute };
 
-  const [currentPage, setCurrentPage] = useState<PageRoute>(getInitialPage);
+  const [route, setRoute] = useState<{ page: PageRoute; slug?: string }>(getInitialRoute);
+  const currentPage = route.page;
+  const [presetRequest, setPresetRequest] = useState<{ text: string; nonce: number } | null>(null);
 
   useEffect(() => {
     const handlePopState = () => {
-      setCurrentPage(getInitialPage());
+      setRoute(getInitialRoute());
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
@@ -43,6 +53,8 @@ export const App: React.FC = () => {
   // Dynamic SEO Page Title Management
   useEffect(() => {
     if (typeof document === 'undefined') return;
+    if (currentPage === 'guides') return; // GuidesPage manages its own title & description
+    document.querySelector('meta[name="description"]')?.setAttribute('content', DEFAULT_DESCRIPTION);
     switch (currentPage) {
       case 'about':
         document.title = 'About Us — Precision Document Optimization | Fileficx';
@@ -62,28 +74,44 @@ export const App: React.FC = () => {
   }, [currentPage]);
 
   const handleNavigate = (page: string) => {
-    const validPages: PageRoute[] = ['home', 'about', 'privacy', 'terms', 'contact'];
-    const targetPage = validPages.includes(page as PageRoute) ? (page as PageRoute) : 'home';
-    setCurrentPage(targetPage);
+    const next = parsePath(page === 'home' ? '' : page);
+    setRoute(next);
     if (typeof window !== 'undefined') {
-      const newUrl = targetPage === 'home' ? '/' : `/${targetPage}`;
+      const newUrl = next.page === 'home' ? '/' : `/${next.page}${next.slug ? `/${next.slug}` : ''}`;
       if (window.location.pathname !== newUrl) {
         window.history.pushState(null, '', newUrl);
       }
+      window.scrollTo({ top: 0 });
     }
   };
-  // Theme Management (Defaults to warm cream theme)
+
+  const handleUsePreset = (text: string) => {
+    setPresetRequest({ text, nonce: Date.now() });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Theme: saved choice, else the OS preference
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('fileficx_theme');
-      if (saved === 'dark' || saved === 'light') return saved;
+      try {
+        const saved = localStorage.getItem('fileficx_theme');
+        if (saved === 'dark' || saved === 'light') return saved;
+      } catch {
+        /* storage unavailable */
+      }
+      if (window.matchMedia?.('(prefers-color-scheme: light)').matches) return 'light';
     }
-    return 'light';
+    return 'dark';
   });
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('fileficx_theme', theme);
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#0a0605' : '#fbf8f4');
+    try {
+      localStorage.setItem('fileficx_theme', theme);
+    } catch {
+      /* storage unavailable */
+    }
   }, [theme]);
 
   const toggleTheme = () => {
@@ -103,6 +131,7 @@ export const App: React.FC = () => {
 
   // File selection attaches the file without auto-navigating to workspace
   const handleFileSelect = (selectedFile: File) => {
+    void import('./components/Workspace'); // warm the chunk while the user reviews settings
     setUploadedFile(selectedFile);
     setIsWorkspaceActive(false); // Strictly keep workspace closed until Parse/Process is clicked
   };
@@ -204,18 +233,15 @@ export const App: React.FC = () => {
           onToggleTheme={toggleTheme}
           hasFile={isWorkspaceActive && uploadedFile !== null}
           onTryAnother={handleReset}
-          currentPage={currentPage}
+          currentPage={route.slug ? `guides/${route.slug}` : currentPage}
           onNavigate={handleNavigate}
         />
 
-        {/* Outer Layout Container with Side Ads & Main Content */}
-        <div className="w-full flex items-start justify-center gap-4 px-2 sm:px-4 py-2">
-          
-          {/* Left Vertical Skyscraper Ad */}
-          <AdBanner variant="side-left" className="hidden 2xl:flex sticky top-20 self-start" />
+        {/* Outer Layout Container with Main Content */}
+        <div className="w-full flex items-start justify-center px-4 sm:px-6">
 
           {/* Center Main Stage */}
-          <main className="w-full max-w-6xl px-2 sm:px-4 py-2 flex-1">
+          <main className="w-full max-w-7xl py-2 flex-1">
             
             {/* View A: About Page */}
             {currentPage === 'about' && (
@@ -232,6 +258,10 @@ export const App: React.FC = () => {
               <TermsPage onNavigate={handleNavigate} />
             )}
 
+            {currentPage === 'guides' && (
+              <GuidesPage slug={route.slug} onNavigate={handleNavigate} />
+            )}
+
             {/* View D: Contact Us Page */}
             {currentPage === 'contact' && (
               <ContactPage onNavigate={handleNavigate} />
@@ -245,22 +275,28 @@ export const App: React.FC = () => {
                     <HeroSection
                       onParsed={handleParsed}
                       hasFile={uploadedFile !== null}
-                      onProceedToWorkspace={handleProceedToWorkspace}
-                    />
-
-                    <FileDropzone
                       currentFile={uploadedFile}
                       onFileSelect={handleFileSelect}
+                      onProceedToWorkspace={handleProceedToWorkspace}
+                      presetRequest={presetRequest}
                     />
+
+                    <HomeContent onUsePreset={handleUsePreset} onNavigate={handleNavigate} />
                   </div>
                 ) : (
                   uploadedFile && (
-                    <div id="workspace-section" className="my-6 animate-slide-up">
-                      <Workspace
-                        file={uploadedFile}
-                        parsedReq={parsedReq}
-                        onReplaceFile={handleReset}
-                      />
+                    <div id="workspace-section" className="pt-6 sm:pt-8 animate-slide-up">
+                      <Suspense
+                        fallback={
+                          <div className="hero-card p-10 text-center text-sm text-[var(--text-muted)]">Loading workspace…</div>
+                        }
+                      >
+                        <Workspace
+                          file={uploadedFile}
+                          parsedReq={parsedReq}
+                          onReplaceFile={handleReset}
+                        />
+                      </Suspense>
                     </div>
                   )
                 )}
@@ -270,9 +306,6 @@ export const App: React.FC = () => {
             {/* Below content ad banner */}
             <AdBanner variant="bottom" />
           </main>
-
-          {/* Right Vertical Skyscraper Ad */}
-          <AdBanner variant="side-right" className="hidden 2xl:flex sticky top-20 self-start" />
 
         </div>
       </div>

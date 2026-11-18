@@ -1,221 +1,135 @@
 import React from 'react';
-import { Github, Linkedin, Instagram, Send } from 'lucide-react';
+import { Github, Linkedin, Instagram, Send, ShieldCheck } from 'lucide-react';
+import { GUIDES } from '../data/guides';
 
 interface FooterProps {
   onNavigate?: (page: string) => void;
 }
 
+const SOCIALS = [
+  { href: 'https://t.me/alchemist_taki', label: 'Telegram', Icon: Send },
+  { href: 'https://github.com/TAKIGOKUL', label: 'GitHub', Icon: Github },
+  { href: 'https://www.linkedin.com/in/gokul-gk-b0b718261/', label: 'LinkedIn', Icon: Linkedin },
+  { href: 'https://www.instagram.com/ad.astra.___/', label: 'Instagram', Icon: Instagram },
+];
+
 export const Footer: React.FC<FooterProps> = ({ onNavigate = () => {} }) => {
-  const openConsentPreferences = () => {
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new Event('open_cmp_preferences'));
-    }
-  };
+  const openConsentPreferences = () => window.dispatchEvent(new Event('open_cmp_preferences'));
 
   const handleNav = (page: string) => {
     onNavigate(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const NavLink: React.FC<{ to: string; children: React.ReactNode }> = ({ to, children }) => (
+    <li>
+      <a
+        href={to === 'home' ? '/' : `/${to}`}
+        onClick={(e) => {
+          e.preventDefault();
+          handleNav(to);
+        }}
+        className="text-[var(--text-secondary)] hover:text-[var(--accent-text)] transition-colors"
+      >
+        {children}
+      </a>
+    </li>
+  );
+
   return (
-    <footer className="w-full border-t border-[var(--border-subtle)] pt-14 pb-8 text-xs text-[var(--text-muted)] mt-20 transition-colors bg-[var(--bg-card)]/70 backdrop-blur-md overflow-hidden">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-12">
-        
-        {/* Top Footer Navigation Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 text-left">
-          
-          {/* Brand & Description (Col 1-6) */}
-          <div className="md:col-span-6 space-y-3.5">
-            <div 
-              onClick={() => handleNav('home')}
-              className="inline-flex items-center gap-2 cursor-pointer group"
+    <footer className="relative w-full mt-28 border-t border-[var(--border-subtle)] bg-[var(--bg-elevated)] overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6 pt-16 pb-10">
+        <div className="grid grid-cols-2 md:grid-cols-12 gap-10 text-sm">
+          {/* Brand */}
+          <div className="col-span-2 md:col-span-4 space-y-4">
+            <a
+              href="/"
+              onClick={(e) => {
+                e.preventDefault();
+                handleNav('home');
+              }}
+              className="inline-flex items-center gap-2.5"
             >
-              <div className="w-8 h-8 rounded-full overflow-hidden shadow-sm border border-[var(--border-subtle)] bg-black flex items-center justify-center group-hover:scale-105 transition-transform">
-                <img 
-                  src="/logo.png" 
-                  alt="Fileficx Logo" 
-                  className="w-full h-full object-cover" 
-                />
-              </div>
-              <span className="text-lg font-black tracking-tight text-[var(--text-primary)]">
-                Fileficx
+              <span className="w-9 h-9 rounded-full overflow-hidden ring-1 ring-[var(--border)] bg-[var(--logo-bg)] p-0.5">
+                <img src="/logo.png" alt="" className="w-full h-full object-cover rounded-full" />
               </span>
-            </div>
-            <p className="text-xs text-[var(--text-muted)] leading-relaxed max-w-sm font-normal">
-              Instant, in-browser document & photo optimization engineered for strict portal requirements. All processing occurs locally inside WebAssembly RAM with complete privacy.
+              <span className="font-display text-xl font-extrabold tracking-tight text-[var(--text-primary)]">Fileficx</span>
+            </a>
+            <p className="text-[var(--text-secondary)] leading-relaxed max-w-xs">
+              Free tools and guides to format photos, signatures and documents for exam, job and visa applications, privately in your browser.
+            </p>
+            <p className="inline-flex items-center gap-2 text-xs text-[var(--text-muted)]">
+              <ShieldCheck className="w-4 h-4 text-[var(--success)]" /> Files never leave your device
             </p>
           </div>
 
-          {/* Company Column (Col 7-9) */}
-          <div className="md:col-span-3 space-y-3">
-            <h4 className="font-bold text-xs text-[var(--text-primary)] tracking-wide">
-              Company
-            </h4>
-            <ul className="space-y-2 text-xs font-medium">
+          {/* Product */}
+          <div className="md:col-span-2 space-y-4">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">Product</h3>
+            <ul className="space-y-2.5">
+              <NavLink to="home">Photo resizer</NavLink>
+              <NavLink to="home">Signature resizer</NavLink>
+              <NavLink to="home">PDF compressor</NavLink>
+              <NavLink to="guides">All guides</NavLink>
+            </ul>
+          </div>
+
+          {/* Guides */}
+          <div className="col-span-2 md:col-span-3 space-y-4">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">Popular guides</h3>
+            <ul className="space-y-2.5">
+              {GUIDES.slice(0, 4).map((g) => (
+                <NavLink key={g.slug} to={`guides/${g.slug}`}>
+                  {g.title.split(':')[0].replace(/\s*\(.*\)$/, '')}
+                </NavLink>
+              ))}
+            </ul>
+          </div>
+
+          {/* Company */}
+          <div className="md:col-span-3 space-y-4">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">Company</h3>
+            <ul className="space-y-2.5">
+              <NavLink to="about">About us</NavLink>
+              <NavLink to="contact">Contact &amp; support</NavLink>
+              <NavLink to="privacy">Privacy policy</NavLink>
+              <NavLink to="terms">Terms &amp; conditions</NavLink>
               <li>
-                <button
-                  onClick={() => handleNav('home')}
-                  className="hover:text-[var(--accent)] transition-colors cursor-pointer"
-                >
-                  Home
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleNav('about')}
-                  className="hover:text-[var(--accent)] transition-colors cursor-pointer"
-                >
-                  About Us
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleNav('privacy')}
-                  className="hover:text-[var(--accent)] transition-colors cursor-pointer"
-                >
-                  Privacy Policy
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleNav('terms')}
-                  className="hover:text-[var(--accent)] transition-colors cursor-pointer"
-                >
-                  Terms & Conditions
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleNav('contact')}
-                  className="hover:text-[var(--accent)] transition-colors cursor-pointer"
-                >
-                  Contact Us
+                <button onClick={openConsentPreferences} className="text-[var(--text-secondary)] hover:text-[var(--accent-text)] transition-colors cursor-pointer">
+                  Cookie preferences
                 </button>
               </li>
             </ul>
           </div>
-
-          {/* Tools & Settings Column (Col 10-12) */}
-          <div className="md:col-span-3 space-y-3">
-            <h4 className="font-bold text-xs text-[var(--text-primary)] tracking-wide">
-              Tools & Settings
-            </h4>
-            <ul className="space-y-2 text-xs font-medium">
-              <li>
-                <button
-                  onClick={() => handleNav('home')}
-                  className="hover:text-[var(--accent)] transition-colors cursor-pointer"
-                >
-                  Passport & Photo Specs
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleNav('home')}
-                  className="hover:text-[var(--accent)] transition-colors cursor-pointer"
-                >
-                  SSC & UPSC Presets
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleNav('home')}
-                  className="hover:text-[var(--accent)] transition-colors cursor-pointer"
-                >
-                  PDF Compress & Merge
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleNav('home')}
-                  className="hover:text-[var(--accent)] transition-colors cursor-pointer"
-                >
-                  DPI & Resolution Resizer
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={openConsentPreferences}
-                  className="hover:text-[var(--accent)] transition-colors cursor-pointer text-[var(--accent)] font-semibold"
-                >
-                  Cookie Preferences (CMP)
-                </button>
-              </li>
-            </ul>
-          </div>
-
         </div>
 
-        {/* Massive Brand Watermark Typography */}
-        <div className="w-full overflow-hidden select-none py-2 text-center pointer-events-none">
-          <span className="block text-5xl sm:text-7xl md:text-8xl lg:text-[10.5rem] font-black tracking-tighter uppercase leading-none text-[var(--text-primary)] opacity-[0.07] dark:opacity-[0.12] transition-opacity">
+        {/* Watermark */}
+        <div aria-hidden="true" className="select-none pointer-events-none text-center mt-14 -mb-6">
+          <span className="font-display block text-6xl sm:text-8xl lg:text-[11rem] font-extrabold tracking-tighter leading-none text-transparent bg-clip-text bg-gradient-to-b from-[var(--border)] to-transparent">
             FILEFICX
           </span>
         </div>
 
-        {/* Bottom Divider & Social Bar */}
-        <div className="border-t border-[var(--border-subtle)] pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-left">
-          <div className="text-[11px] text-[var(--text-muted)] font-normal flex flex-wrap items-center gap-2">
-            <img 
-              src="/logo.png" 
-              alt="Fileficx" 
-              className="w-5 h-5 rounded-full object-cover border border-[var(--border-subtle)] bg-black inline-block shrink-0" 
-            />
-            <span>Built by <strong className="text-[var(--text-primary)] font-semibold">TAKIGOKUL</strong>. Powered securely by WebAssembly. No files are uploaded to any server.</span>
-            <span>•</span>
-            <button
-              onClick={() => handleNav('privacy')}
-              className="text-[var(--text-muted)] hover:text-[var(--accent)] underline transition-colors cursor-pointer"
-            >
-              Privacy Policy
-            </button>
-          </div>
-
-          {/* Social Icons */}
-          <div className="flex flex-wrap items-center gap-2 text-[var(--text-muted)]">
-            <a
-              href="https://t.me/alchemist_taki"
-              target="_blank"
-              rel="noreferrer"
-              className="p-1.5 rounded-full hover:text-[var(--text-primary)] hover:bg-[var(--input-inner-bg)] transition-colors"
-              aria-label="Telegram"
-              title="Telegram"
-            >
-              <Send className="w-4 h-4" />
-            </a>
-            <a
-              href="https://github.com/TAKIGOKUL"
-              target="_blank"
-              rel="noreferrer"
-              className="p-1.5 rounded-full hover:text-[var(--text-primary)] hover:bg-[var(--input-inner-bg)] transition-colors"
-              aria-label="GitHub"
-              title="GitHub"
-            >
-              <Github className="w-4 h-4" />
-            </a>
-            <a
-              href="https://www.linkedin.com/in/gokul-gk-b0b718261/"
-              target="_blank"
-              rel="noreferrer"
-              className="p-1.5 rounded-full hover:text-[var(--text-primary)] hover:bg-[var(--input-inner-bg)] transition-colors"
-              aria-label="LinkedIn"
-              title="LinkedIn"
-            >
-              <Linkedin className="w-4 h-4" />
-            </a>
-            <a
-              href="https://www.instagram.com/ad.astra.___/"
-              target="_blank"
-              rel="noreferrer"
-              className="p-1.5 rounded-full hover:text-[var(--text-primary)] hover:bg-[var(--input-inner-bg)] transition-colors"
-              aria-label="Instagram"
-              title="Instagram"
-            >
-              <Instagram className="w-4 h-4" />
-            </a>
+        <div className="relative border-t border-[var(--border-subtle)] pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--text-muted)]">
+          <p>
+            © {new Date().getFullYear()} Fileficx. Built by TAKIGOKUL. Specifications are for guidance; always confirm with the official notification.
+          </p>
+          <div className="flex items-center gap-1">
+            {SOCIALS.map(({ href, label, Icon }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={label}
+                title={label}
+                className="p-2 rounded-full hover:text-[var(--accent-text)] hover:bg-[var(--accent-subtle)] transition-colors"
+              >
+                <Icon className="w-4 h-4" />
+              </a>
+            ))}
           </div>
         </div>
-
       </div>
     </footer>
   );

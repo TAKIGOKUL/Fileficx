@@ -30,6 +30,11 @@ export interface ProcessingMetadata {
   compressionRatio?: number;
   processingTimeMs?: number;
   downloadFilename?: string;
+  /** Encoder quality used (0–1) */
+  quality?: number;
+  /** Set when the KB window could not be met */
+  sizeUnmet?: 'over' | 'under';
+  dpi?: number;
 }
 
 export type ResizeMode = 'pixels' | 'percent' | 'longest' | 'shortest' | 'ratio';
@@ -45,6 +50,10 @@ export interface ImageProcessingConfig {
   shortestSide: number;
   aspectRatioPreset: 'free' | '1:1' | '3.5:4.5' | '2:2' | '4:3' | '16:9' | '3:4' | '2:3';
   targetSizeKB?: number;
+  /** Lower KB bound; encoder raises quality to stay above it when possible */
+  minSizeKB?: number;
+  /** How exact-size output treats a different aspect ratio */
+  fit?: 'cover' | 'contain' | 'stretch';
   quality: number; // 1 - 100
   dpi: number;
   colorMode: 'rgb' | 'grayscale' | 'bw';
@@ -58,6 +67,10 @@ export interface PDFProcessingConfig {
   splitRange?: string; // e.g. "1-3, 5, 7-9"
   rotateAngle?: 90 | 180 | 270;
   removePages?: string; // e.g. "2, 4"
+  /** 0-indexed page selection (takes precedence over range strings) */
+  pages?: number[];
+  /** Convert pages to grayscale while compressing */
+  grayscale?: boolean;
   quality?: number;
   imageFormat?: 'jpg' | 'png';
   pageFormat?: 'A4' | 'Letter' | 'Legal' | 'Custom';

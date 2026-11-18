@@ -1,205 +1,353 @@
-import React, { useState, useEffect } from 'react';
-import { Sparkles, CheckCircle2 } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  ArrowRight,
+  ArrowDown,
+  CheckCircle2,
+  ShieldCheck,
+  UploadCloud,
+  FileImage,
+  FileText,
+  RefreshCw,
+  Sparkles,
+  BadgeCheck,
+  Lock,
+  Zap,
+} from 'lucide-react';
 import { ParsedRequirement } from '../types';
 import { parseInstructions } from '../utils/instructionParser';
+import { formatFileSize } from '../utils/format';
 
 interface HeroSectionProps {
   onParsed: (req: ParsedRequirement) => void;
   hasFile?: boolean;
+  currentFile: File | null;
+  onFileSelect: (file: File) => void;
   onProceedToWorkspace?: () => void;
+  /** Lets other sections (e.g. the preset table) load a requirement into the parser. */
+  presetRequest?: { text: string; nonce: number } | null;
 }
 
-const TYPING_PHRASES = [
+export const TYPING_PHRASES = [
   'Photo: JPG, max 50KB, 200x230px, 200 DPI, white background',
   'Signature: JPG, 10KB - 20KB, 140x60px, black ink on white paper',
   'Degree Certificate: PDF format, under 300KB, clean scan',
-  'Passport Photo: 3.5 x 4.5 cm, white background, < 50KB'
+  'Passport Photo: 3.5 x 4.5 cm, white background, < 50KB',
+  'US Visa DS-160: 600x600px, 300 DPI, max 240KB, 2x2 inch',
 ];
+
+const DEMOS = [
+  { from: ['IMG_2041.jpg', '4.2 MB', '4032 × 3024'], to: ['photo_200x230.jpg', '46 KB', '200 × 230 · 200 DPI'], tag: 'Exam photo' },
+  { from: ['signature_scan.png', '1.8 MB', '2480 × 1100'], to: ['sign_140x60.jpg', '17 KB', '140 × 60 · grayscale'], tag: 'Signature' },
+  { from: ['marksheet.pdf', '6.4 MB', '4 pages'], to: ['marksheet_compressed.pdf', '288 KB', '4 pages · readable'], tag: 'Certificate' },
+];
+
+const ACCEPT = 'image/jpeg,image/png,image/webp,application/pdf,image/heic,.jpg,.jpeg,.png,.webp,.pdf,.heic';
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
   onParsed,
   hasFile = false,
-  onProceedToWorkspace
+  currentFile,
+  onFileSelect,
+  onProceedToWorkspace,
+  presetRequest,
 }) => {
-  const [inputText, setInputText] = useState<string>('');
-  const [isUserEditing, setIsUserEditing] = useState<boolean>(false);
-  const [typedText, setTypedText] = useState<string>('');
-  const [phraseIndex, setPhraseIndex] = useState<number>(0);
-  const [isDeleting, setIsDeleting] = useState<boolean>(false);
-  const [lastParsed, setLastParsed] = useState<ParsedRequirement | null>(null);
-  const [hasJustParsed, setHasJustParsed] = useState<boolean>(false);
+  const [inputText, setInputText] = useState('');
+  const [isUserEditing, setIsUserEditing] = useState(false);
+  const [typedText, setTypedText] = useState('');
+  const [phraseIndex, setPhraseIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [rules, setRules] = useState<string[]>([]);
+  const [demo, setDemo] = useState(0);
+  const [dragOver, setDragOver] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
-  // Typewriter animation loop when user is not actively editing
+  // Typewriter placeholder while the user hasn't typed
   useEffect(() => {
-    if (isUserEditing && inputText.length > 0) return;
-
-    const currentPhrase = TYPING_PHRASES[phraseIndex];
-    let timeout: NodeJS.Timeout;
-
+    if (isUserEditing) return;
+    const phrase = TYPING_PHRASES[phraseIndex];
+    let t: ReturnType<typeof setTimeout>;
     if (!isDeleting) {
-      if (typedText.length < currentPhrase.length) {
-        timeout = setTimeout(() => {
-          setTypedText(currentPhrase.slice(0, typedText.length + 1));
-        }, 38);
-      } else {
-        // Finished typing phrase, wait before deleting
-        timeout = setTimeout(() => {
-          setIsDeleting(true);
-        }, 2200);
-      }
+      t = typedText.length < phrase.length
+        ? setTimeout(() => setTypedText(phrase.slice(0, typedText.length + 1)), 34)
+        : setTimeout(() => setIsDeleting(true), 2200);
+    } else if (typedText.length > 0) {
+      t = setTimeout(() => setTypedText(phrase.slice(0, typedText.length - 1)), 14);
     } else {
-      if (typedText.length > 0) {
-        timeout = setTimeout(() => {
-          setTypedText(currentPhrase.slice(0, typedText.length - 1));
-        }, 18);
-      } else {
-        // Finished deleting, move to next phrase
-        setIsDeleting(false);
-        setPhraseIndex((prev) => (prev + 1) % TYPING_PHRASES.length);
-      }
+      setIsDeleting(false);
+      setPhraseIndex((p) => (p + 1) % TYPING_PHRASES.length);
     }
+    return () => clearTimeout(t);
+  }, [typedText, isDeleting, phraseIndex, isUserEditing]);
 
-    return () => clearTimeout(timeout);
-  }, [typedText, isDeleting, phraseIndex, isUserEditing, inputText]);
+  // Rotating before/after demo
+  useEffect(() => {
+    const t = setInterval(() => setDemo((d) => (d + 1) % DEMOS.length), 3800);
+    return () => clearInterval(t);
+  }, []);
 
-  const handleParse = (textToParse?: string) => {
-    const text = textToParse || inputText || typedText || TYPING_PHRASES[0];
-    if (!text.trim()) return;
-
+  const parse = (text: string) => {
+    if (!text.trim()) {
+      setRules([]);
+      return;
+    }
     const parsed = parseInstructions(text);
-    setLastParsed(parsed);
-    setHasJustParsed(true);
+    setRules(parsed.detectedRules);
     onParsed(parsed);
-
-    // If file is attached, proceed directly to workspace!
-    if (hasFile && onProceedToWorkspace) {
-      onProceedToWorkspace();
-    } else {
-      setTimeout(() => {
-        setHasJustParsed(false);
-      }, 1500);
-    }
   };
 
-  const displayedText = isUserEditing ? inputText : (inputText || typedText);
+  // Live parsing as the user types (debounced)
+  useEffect(() => {
+    if (!isUserEditing) return;
+    const t = setTimeout(() => parse(inputText), 250);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inputText, isUserEditing]);
+
+  // Preset pushed from elsewhere on the page
+  useEffect(() => {
+    if (!presetRequest) return;
+    setIsUserEditing(true);
+    setInputText(presetRequest.text);
+    parse(presetRequest.text);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [presetRequest?.nonce]);
+
+  const usePhrase = (p: string) => {
+    setIsUserEditing(true);
+    setInputText(p);
+    parse(p);
+  };
+
+  const process = () => {
+    if (!isUserEditing || !inputText.trim()) parse(inputText || TYPING_PHRASES[phraseIndex]);
+    else parse(inputText);
+    if (hasFile && onProceedToWorkspace) onProceedToWorkspace();
+    else fileRef.current?.click();
+  };
+
+  const pick = (files: FileList | null) => {
+    if (files && files.length) onFileSelect(files[0]);
+  };
+
+  const isPdf = currentFile && (/pdf/.test(currentFile.type) || /\.pdf$/i.test(currentFile.name));
+  const d = DEMOS[demo];
 
   return (
-    <section className="w-full pt-8 pb-4 text-center">
-      <div className="max-w-4xl mx-auto px-4">
-        
-        {/* Headlines */}
-        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[var(--text-primary)] mb-2 leading-tight">
-          Make every file<br />
-          <span className="text-[var(--accent)]">application ready.</span>
-        </h1>
-        <p className="text-sm sm:text-base text-[var(--text-muted)] font-medium mb-6">
-          Paste the requirement. Drop the file. Done.
-        </p>
+    <section className="relative w-full pt-10 sm:pt-14 lg:pt-20 pb-6" aria-labelledby="hero-title">
+      <div className="absolute inset-x-0 -top-28 h-[640px] bg-grid pointer-events-none" aria-hidden="true" />
+      <div
+        className="absolute -top-24 right-[-10%] w-[620px] h-[620px] rounded-full pointer-events-none blur-3xl opacity-60"
+        style={{ background: 'radial-gradient(circle, var(--accent-glow), transparent 65%)' }}
+        aria-hidden="true"
+      />
 
-        {/* Instruction Card */}
-        <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-3 shadow-lg max-w-2xl mx-auto flex items-stretch gap-3 text-left transition-all">
-          
-          {/* Inner textarea */}
-          <div
-            onClick={() => {
-              setIsUserEditing(true);
-            }}
-            className="flex-1 rounded-xl bg-[var(--input-inner-bg)] border border-[var(--border-subtle)] p-2.5 relative cursor-text min-h-[68px] focus-within:border-[var(--accent)] transition-colors"
-          >
-            <textarea
-              rows={2}
-              value={displayedText}
-              onChange={(e) => {
-                setIsUserEditing(true);
-                setInputText(e.target.value);
-              }}
-              onFocus={() => {
-                setIsUserEditing(true);
-                if (!inputText && typedText) {
-                  setInputText(typedText);
-                }
-              }}
-              placeholder='Paste requirements (e.g. "Photo: JPG, max 50KB, 200x230px, 200 DPI")'
-              className="w-full h-full bg-transparent text-[var(--text-primary)] placeholder-[var(--text-muted)]/60 text-xs sm:text-sm font-semibold focus:outline-none resize-none font-sans leading-relaxed block caret-[var(--accent)]"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-                  handleParse();
-                }
-              }}
-            />
+      <div className="relative grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,520px)] gap-10 lg:gap-12 items-center">
+        {/* ─── Copy column ─── */}
+        <div className="min-w-0 text-center lg:text-left">
+          <span className="badge-mooni mb-6">
+            <ShieldCheck className="w-3.5 h-3.5" /> Free · Private · No sign-up
+          </span>
+
+          <h1 id="hero-title" className="text-[2.6rem] leading-[1.02] sm:text-6xl lg:text-[3.6rem] xl:text-[4.4rem] font-extrabold tracking-[-0.035em] text-[var(--text-primary)]">
+            Make every file
+            <br />
+            <span className="text-color-gradient-brand">application ready.</span>
+          </h1>
+
+          <p className="mt-6 text-lg sm:text-xl font-semibold text-[var(--text-primary)]">Paste the requirement. Drop the file. Done.</p>
+          <p className="mt-3 text-[15px] sm:text-base text-[var(--text-secondary)] max-w-xl mx-auto lg:mx-0 leading-relaxed">
+            Resize photos, signatures and PDFs to the exact pixels, KB and DPI that exam, job and visa portals check. Everything runs in your browser.
+            No files are uploaded to any server.
+          </p>
+
+          {/* Before → after demo */}
+          <div className="hidden sm:block mt-9 max-w-xl mx-auto lg:mx-0" aria-hidden="true">
+            <div key={demo} className="animate-fadeIn grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+              <DemoCard lines={d.from} muted />
+              <span className="w-9 h-9 rounded-full bg-[var(--accent)] text-white flex items-center justify-center shadow-lg shadow-[var(--accent-glow)]">
+                <ArrowRight className="w-4 h-4" />
+              </span>
+              <DemoCard lines={d.to} tag={d.tag} />
+            </div>
           </div>
 
-          {/* Action Button: Professional & Clean */}
-          {hasFile ? (
-            <button
-              type="button"
-              onClick={() => handleParse()}
-              className="px-5 py-2.5 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 cursor-pointer shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all duration-200 shrink-0"
-              title="Click to parse requirements & start processing your file"
-            >
-              <span>Process Now →</span>
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => handleParse()}
-              className={`rounded-xl px-4 py-2.5 bg-[var(--input-inner-bg)] hover:bg-[var(--accent-subtle)] text-[var(--text-primary)] hover:text-[var(--accent)] border border-[var(--border-subtle)] hover:border-[var(--accent)]/40 flex items-center justify-center gap-1.5 text-xs font-bold cursor-pointer transition-all duration-200 active:scale-95 shrink-0 ${
-                hasJustParsed ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/30' : ''
+          <ul className="mt-8 flex flex-wrap justify-center lg:justify-start gap-x-6 gap-y-2 text-[13px] font-medium text-[var(--text-secondary)]">
+            <li className="inline-flex items-center gap-1.5">
+              <Lock className="w-4 h-4 text-[var(--success)]" /> Files stay on your device
+            </li>
+            <li className="inline-flex items-center gap-1.5">
+              <BadgeCheck className="w-4 h-4 text-[var(--success)]" /> No watermark
+            </li>
+            <li className="inline-flex items-center gap-1.5">
+              <Zap className="w-4 h-4 text-[var(--success)]" /> Results in seconds
+            </li>
+          </ul>
+        </div>
+
+        {/* ─── Tool card ─── */}
+        <div className="relative min-w-0">
+          <div className="absolute -inset-px rounded-[2rem] bg-gradient-to-b from-[var(--accent-border)] to-transparent pointer-events-none" aria-hidden="true" />
+          <div className="relative rounded-[2rem] bg-[var(--bg-elevated)] border border-[var(--border-subtle)] shadow-[var(--shadow-lift)] p-4 sm:p-6">
+            {/* Step 1 */}
+            <StepLabel n={1} htmlFor="req-input">
+              Paste your form's requirement
+            </StepLabel>
+            <div className="rounded-2xl bg-[var(--input-inner-bg)] border border-[var(--border-subtle)] px-4 py-3 focus-within:border-[var(--accent)] focus-within:ring-4 focus-within:ring-[var(--accent-subtle)] transition-all">
+              <textarea
+                id="req-input"
+                rows={2}
+                value={isUserEditing ? inputText : typedText}
+                onFocus={() => {
+                  if (!isUserEditing) {
+                    setIsUserEditing(true);
+                    setInputText('');
+                  }
+                }}
+                onChange={(e) => {
+                  setIsUserEditing(true);
+                  setInputText(e.target.value);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) process();
+                }}
+                placeholder='e.g. "Photo: JPG, 20–50 KB, 200×230 px, 200 DPI"'
+                className={`w-full bg-transparent resize-none text-[15px] font-medium leading-relaxed focus:outline-none caret-[var(--accent)] placeholder:text-[var(--text-muted)] ${
+                  isUserEditing ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)]'
+                }`}
+              />
+              <div className="min-h-[24px] flex flex-wrap gap-1.5" aria-live="polite">
+                {rules.length > 0 ? (
+                  rules.map((r) => (
+                    <span key={r} className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-md bg-[var(--success-subtle)] text-[var(--success)]">
+                      <CheckCircle2 className="w-3 h-3" /> {r}
+                    </span>
+                  ))
+                ) : (
+                  <span className="inline-flex items-center gap-1 text-[11px] text-[var(--text-muted)]">
+                    <Sparkles className="w-3 h-3" /> Size, KB, format and DPI are detected as you type
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="mt-2.5 -mx-1 px-1 flex gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none]">
+              {TYPING_PHRASES.map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => usePhrase(p)}
+                  className="shrink-0 px-3 py-1 rounded-full text-xs font-medium border border-[var(--border-subtle)] bg-[var(--bg-elevated)] text-[var(--text-secondary)] hover:border-[var(--accent-border)] hover:text-[var(--accent-text)] hover:bg-[var(--accent-subtle)] transition-colors cursor-pointer"
+                >
+                  {p.split(':')[0]}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex justify-center my-3 text-[var(--text-muted)]" aria-hidden="true">
+              <ArrowDown className="w-4 h-4" />
+            </div>
+
+            {/* Step 2 */}
+            <StepLabel n={2}>Add your file</StepLabel>
+            <div
+              role="button"
+              tabIndex={0}
+              aria-label="Upload a file"
+              onClick={() => fileRef.current?.click()}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  fileRef.current?.click();
+                }
+              }}
+              onDragOver={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setDragOver(true);
+              }}
+              onDragLeave={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setDragOver(false);
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setDragOver(false);
+                pick(e.dataTransfer.files);
+              }}
+              className={`group rounded-2xl border-2 border-dashed px-4 py-6 text-center cursor-pointer transition-all ${
+                dragOver
+                  ? 'border-[var(--accent)] bg-[var(--accent-subtle)] scale-[1.01]'
+                  : currentFile
+                    ? 'border-[var(--success)]/50 bg-[var(--success-subtle)]'
+                    : 'border-[var(--border)] hover:border-[var(--accent)] hover:bg-[var(--accent-subtle)]'
               }`}
-              title="Parse instructions"
             >
-              {hasJustParsed ? (
-                <>
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                  <span>Parsed</span>
-                </>
+              <input ref={fileRef} type="file" accept={ACCEPT} className="hidden" onChange={(e) => pick(e.target.files)} />
+              {currentFile ? (
+                <div className="flex items-center gap-3 text-left animate-fadeIn">
+                  <span className="w-11 h-11 rounded-xl bg-[var(--bg-elevated)] border border-[var(--success)]/30 text-[var(--success)] flex items-center justify-center shrink-0">
+                    {isPdf ? <FileText className="w-5 h-5" /> : <FileImage className="w-5 h-5" />}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[11px] font-semibold text-[var(--success)]">File Attached:</p>
+                    <p className="text-sm font-bold text-[var(--text-primary)] truncate">{currentFile.name}</p>
+                    <p className="text-[11px] font-mono text-[var(--text-muted)]">{formatFileSize(currentFile.size)}</p>
+                  </div>
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[var(--text-muted)] group-hover:text-[var(--accent-text)]">
+                    <RefreshCw className="w-3.5 h-3.5" /> Change
+                  </span>
+                </div>
               ) : (
                 <>
-                  <Sparkles className="w-4 h-4 text-[var(--accent)]" />
-                  <span>Parse</span>
+                  <span className="icon-tile !w-12 !h-12 !rounded-2xl mb-3 group-hover:scale-110 group-hover:-translate-y-0.5 transition-transform">
+                    <UploadCloud className="w-6 h-6" />
+                  </span>
+                  <p className="text-[15px] font-bold text-[var(--text-primary)]">Drop files here or click to upload</p>
+                  <p className="mt-1 text-xs text-[var(--text-muted)] font-mono">JPG · PNG · WEBP · HEIC · PDF</p>
                 </>
               )}
+            </div>
+
+            {/* CTA */}
+            <button
+              type="button"
+              onClick={process}
+              className={`mt-4 w-full btn !rounded-2xl !py-4 text-[15px] ${hasFile ? 'btn-primary' : 'btn-secondary'}`}
+            >
+              {hasFile ? 'Process Now →' : <>Choose a file to start <ArrowRight className="w-4 h-4" /></>}
             </button>
-          )}
-        </div>
 
-        {/* Quick Example Chips */}
-        <div className="mt-2.5 max-w-2xl mx-auto flex flex-wrap items-center justify-center gap-1.5 text-[11px]">
-          <span className="text-[var(--text-muted)] text-[10px] font-semibold uppercase tracking-wider mr-1">Presets:</span>
-          {TYPING_PHRASES.map((phrase, idx) => {
-            const label = phrase.split(':')[0];
-            return (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => {
-                  setIsUserEditing(true);
-                  setInputText(phrase);
-                  handleParse(phrase);
-                }}
-                className="px-2.5 py-1 rounded-lg bg-[var(--input-inner-bg)]/80 hover:bg-[var(--accent-subtle)] text-[var(--text-muted)] hover:text-[var(--accent)] border border-[var(--border-subtle)] hover:border-[var(--accent)]/30 font-medium text-[11px] transition-colors cursor-pointer"
-              >
-                {label}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Parsed Rules Chip List */}
-        {lastParsed && lastParsed.detectedRules.length > 0 && (
-          <div className="mt-3 max-w-2xl mx-auto flex flex-wrap items-center justify-center gap-1.5 animate-fadeIn">
-            {lastParsed.detectedRules.map((rule, idx) => (
-              <span
-                key={idx}
-                className="inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[var(--bg-card)] text-[var(--accent)] border border-[var(--accent)]/30 shadow-xs"
-              >
-                ✓ {rule}
-              </span>
-            ))}
+            <p className="mt-3 flex items-center justify-center gap-1.5 text-[11.5px] text-[var(--text-muted)]">
+              <ShieldCheck className="w-3.5 h-3.5 text-[var(--success)]" /> No files are uploaded to any server.
+            </p>
           </div>
-        )}
-
+        </div>
       </div>
     </section>
   );
 };
+
+const StepLabel: React.FC<{ n: number; htmlFor?: string; children: React.ReactNode }> = ({ n, htmlFor, children }) => (
+  <label htmlFor={htmlFor} className="flex items-center gap-2.5 mb-2.5">
+    <span className="w-6 h-6 rounded-full bg-[var(--accent)] text-white text-xs font-bold flex items-center justify-center">{n}</span>
+    <span className="text-sm font-bold text-[var(--text-primary)]">{children}</span>
+  </label>
+);
+
+const DemoCard: React.FC<{ lines: string[]; muted?: boolean; tag?: string }> = ({ lines, muted, tag }) => (
+  <div
+    className={`relative rounded-2xl border p-3.5 text-left ${
+      muted ? 'border-[var(--border-subtle)] bg-[var(--bg-card)]' : 'border-[var(--success)]/35 bg-[var(--bg-elevated)] shadow-[var(--shadow-soft)]'
+    }`}
+  >
+    {tag && (
+      <span className="absolute -top-2.5 right-3 text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--success)] text-white">
+        ✓ {tag}
+      </span>
+    )}
+    <p className={`text-[12px] font-semibold truncate ${muted ? 'text-[var(--text-secondary)]' : 'text-[var(--text-primary)]'}`}>{lines[0]}</p>
+    <p className={`font-mono text-lg font-bold mt-0.5 ${muted ? 'text-[var(--text-muted)] line-through decoration-1' : 'text-[var(--success)]'}`}>{lines[1]}</p>
+    <p className="font-mono text-[10.5px] text-[var(--text-muted)] truncate">{lines[2]}</p>
+  </div>
+);
